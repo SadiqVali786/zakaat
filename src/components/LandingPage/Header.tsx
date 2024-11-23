@@ -1,8 +1,8 @@
 "use client";
 
-import Logo from "@/../public/Logo.png";
+import Logo from "@/../public/Logo/Logo.png";
 import Image from "next/image";
-import Button from "./Button";
+import Button from "../Button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -29,7 +29,7 @@ export default function HeaderSection() {
   const pathname = usePathname();
 
   return (
-    <div className="flex justify-between items-center mx-20 py-8 border-b-[1px] border-nuetral-11">
+    <div className="flex justify-between items-center mx-20 py-8 mb-44 border-b-[1px] border-nuetral-11">
       <div className="flex gap-[6px] items-center">
         <Image src={Logo} width={40} height={40} alt="logo" />
         <span className="text-2xl">zakaat</span>
