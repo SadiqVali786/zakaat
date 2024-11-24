@@ -105,7 +105,13 @@ export default function TestimonialsSection() {
     <div className="mb-64 mx-auto flex flex-col gap-y-24 items-center">
       <div className="flex flex-col gap-y-11">
         <Pill text="✨ Testimonials" />
-        <h1 className="text-[55px] leading-none font-bold text-center max-w-[1200px]">
+        <h1
+          className="leading-none font-bold text-center max-w-[1200px]"
+          style={{
+            fontSize: "clamp(35px, 6vw, 55px)",
+            margin: "0 clamp(1rem, 4.9vw, 5rem)",
+          }}
+        >
           <span className="text-blue-200">
             Join thousands who trust us for secure, dignified, and{" "}
           </span>

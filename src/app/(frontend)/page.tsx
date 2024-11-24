@@ -1,5 +1,5 @@
 import AboutSection from "@/components/LandingPage/AboutSection";
-import FaqsSection from "@/components/LandingPage/FaqsSection copy";
+import FaqsSection from "@/components/LandingPage/FaqsSection";
 import FeaturesSection from "@/components/LandingPage/FeaturesSection";
 import HeroSection from "@/components/LandingPage/HeroSection";
 import TestimonialsSection from "@/components/LandingPage/TestimonialsSection";

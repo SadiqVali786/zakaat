@@ -119,7 +119,10 @@ export default function FeaturesSection() {
     <div className="mb-64 mx-20 flex flex-col gap-y-24 items-center">
       <div className="flex flex-col gap-y-11">
         <Pill text="✨ Features of Zakaat Platform" />
-        <h1 className="text-[55px] leading-none font-bold text-center max-w-[888px]">
+        <h1
+          className="leading-none font-bold text-center max-w-[888px]"
+          style={{ fontSize: "clamp(35px, 6vw, 55px)" }}
+        >
           <span className="text-blue-200">Streamlined tools, </span>
           <span className="text-purple-200">
             making every Zakaat contribution secure

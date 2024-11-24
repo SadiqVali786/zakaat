@@ -9,14 +9,23 @@ import Pill from "./Pill";
 export default function WhySection() {
   return (
     <div className="flex flex-col gap-y-[90px]">
-      <h2 className="text-[55px] text-center text-purple-100 font-bold">
+      <h2
+        className="text-center text-purple-100 font-bold"
+        style={{
+          margin: "0 clamp(1rem, 4.9vw, 5rem)",
+          fontSize: "clamp(35px, 6vw, 55px)",
+        }}
+      >
         Why Choose Our Platform for Donations?
       </h2>
       <div className="px-20 mb-64 flex items-center justify-between">
         <div className="flex flex-col gap-y-24 w-[875px]">
           <div className="flex flex-col gap-y-11">
             <Pill text="✨ Find Your Relatives, Friends & neighbours Here" />
-            <h1 className="text-[45px] leading-none font-bold">
+            <h1
+              className="leading-none font-bold"
+              style={{ fontSize: "clamp(30px, 5vw, 45px)" }}
+            >
               <span className="text-blue-200">
                 Reaching out to friends and family for Zakaat Money can be
                 challenging.{" "}
@@ -25,7 +34,10 @@ export default function WhySection() {
                 Many may hesitate to request it out of dignity.
               </span>
             </h1>
-            <p className="text-xl leading-[26px] text-blue-100">
+            <p
+              className="leading-[26px] text-blue-100"
+              style={{ fontSize: "clamp(16px, 2.43vw, 20px)" }}
+            >
               We simplify Zakaat donations by serving as a free intermediary for
               both donors and applicants. Donors can rely on us to connect them
               with friends or family in need, if they’re on the platform.

@@ -40,8 +40,11 @@ const footerLinksRight = [
 
 export default function FooterSection() {
   return (
-    <footer className="mx-20 border-t-[1px] py-20 border-t-neutral-11 text-neutral-7">
-      <div className="flex gap-x-72 items-center justify-center">
+    <footer
+      className="border-t-[1px] py-20 border-t-neutral-11 text-neutral-7"
+      style={{ margin: "0 clamp(1rem, 4.9vw, 5rem)" }}
+    >
+      <div className="flex items-center justify-around flex-wrap gap-16">
         <div className="flex flex-col gap-y-8">
           <Image alt="BigLogo" src={BigLogo} width={80} height={80} />
           <div className="flex flex-col gap-y-5">
@@ -67,7 +70,7 @@ export default function FooterSection() {
             </div>
           </div>
         </div>
-        <div className="flex justify-between w-80">
+        <div className="flex justify-between gap-x-16 flex-wrap">
           <ul className="flex flex-col gap-y-2">
             {footerLinksLeft.map((link) => (
               <Link href={link.link} key={link.text}>

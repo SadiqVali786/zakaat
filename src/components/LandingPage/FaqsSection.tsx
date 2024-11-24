@@ -32,10 +32,19 @@ const FAQS = [
 
 export default function FaqsSection() {
   return (
-    <div className="mb-44 max-w-[1136px] mx-auto flex flex-col gap-y-24 items-center">
+    <div
+      className="mb-44 mx-auto flex flex-col gap-y-24 items-center"
+      style={{
+        marginLeft: "clamp(1rem, 4.9vw, 5rem)",
+        marginRight: "clamp(1rem, 4.9vw, 5rem)",
+      }}
+    >
       <div className="flex flex-col gap-y-11">
         <Pill text="✨ Frequently Asked Questions " />
-        <h1 className="text-[55px] leading-none font-bold text-center">
+        <h1
+          className="leading-none font-bold text-center"
+          style={{ fontSize: "clamp(35px, 6vw, 55px)" }}
+        >
           <span className="text-blue-200">
             Not sure if our Zakaat platform is right for you?{" "}
           </span>
@@ -52,3 +61,18 @@ export default function FaqsSection() {
     </div>
   );
 }
+
+//
+// clamp(min, curr, max) // return curr if min < curr < max else min if curr < min or max if curr > max
+// clamp(50px, 8vw, 100px)
+// clamp(50px, 7vw + 1rem, 100px)
+//
+//
+// clamp(3.5rem, 12vw + 1rem, 8rem)
+// clamp(2rem, 5vw, 5rem)
+//
+// py: min(20vh, 10rem)
+// px: min(20vw, 10rem)
+
+// max(500px, 70%)
+// min(500px, 70%)

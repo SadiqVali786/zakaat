@@ -16,11 +16,15 @@ const Accordion = ({
 
   return (
     <div
-      className="w-[1062px] py-[1.875rem] px-[3.75rem] rounded-[30px] border border-[#1d1b2c] bg-gradient-to-b from-[#030014] to-[#201d2f]"
+      className="rounded-[30px] border border-[#1d1b2c] bg-gradient-to-b from-[#030014] to-[#201d2f]"
       onClick={() => setIsOpen((prev) => !prev)}
+      style={{ padding: "clamp(20px, 3.3vw, 30px) clamp(20px, 4.7vw, 60px)" }}
     >
       <div className="flex justify-between items-center self-stretch">
-        <div className="text-[#c4c0fb] text-[1.625rem] leading-normal">
+        <div
+          className="text-[#c4c0fb] leading-normal"
+          style={{ fontSize: "clamp(20px, 3.1vw, 26px)" }}
+        >
           {question}
         </div>
         <Image
@@ -31,7 +35,7 @@ const Accordion = ({
         />
       </div>
       <div
-        className={`transition-all duration-500 overflow-hidden w-[933px] h-px bg-[#292637] ${
+        className={`transition-all duration-500 overflow-hidden w-full h-px bg-[#292637] ${
           isOpen ? "max-h-[1px] opacity-100 mt-5" : "max-h-0 opacity-0"
         }`}
       />
