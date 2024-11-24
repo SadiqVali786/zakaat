@@ -40,7 +40,7 @@ const footerLinksRight = [
 
 export default function FooterSection() {
   return (
-    <footer className="mx-20 border-t-[1px] py-20 border-t-nuetral-11 text-nuetral-7">
+    <footer className="mx-20 border-t-[1px] py-20 border-t-neutral-11 text-neutral-7">
       <div className="flex gap-x-72 items-center justify-center">
         <div className="flex flex-col gap-y-8">
           <Image alt="BigLogo" src={BigLogo} width={80} height={80} />

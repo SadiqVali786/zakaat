@@ -51,7 +51,6 @@ export default {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
-        //
         blue: {
           "50": "#ecebfe",
           "100": "#c4c0fb",
@@ -64,7 +63,7 @@ export default {
           "800": "#241d86",
           "900": "#1b1666",
         },
-        Purple: {
+        purple: {
           "50": "#f9eefe",
           "100": "#ebc9fb",
           "200": "#e1aff9",
@@ -76,7 +75,7 @@ export default {
           "800": "#692d85",
           "900": "#502266",
         },
-        nuetral: {
+        neutral: {
           "1": "#ffffff",
           "2": "#fcfcfd",
           "3": "#f5f5f6",
@@ -102,12 +101,33 @@ export default {
           purple: "#be52f2",
           dark: "#030014",
         },
-        //
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      keyframes: {
+        marquee: {
+          from: {
+            transform: "translateX(0)",
+          },
+          to: {
+            transform: "translateX(calc(-100% - var(--gap)))",
+          },
+        },
+        "marquee-vertical": {
+          from: {
+            transform: "translateY(0)",
+          },
+          to: {
+            transform: "translateY(calc(-100% - var(--gap)))",
+          },
+        },
+      },
+      animation: {
+        marquee: "marquee var(--duration) infinite linear",
+        "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
       },
     },
   },
