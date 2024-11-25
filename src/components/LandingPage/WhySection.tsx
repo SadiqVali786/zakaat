@@ -8,9 +8,12 @@ import Pill from "./Pill";
 
 export default function WhySection() {
   return (
-    <div className="flex flex-col gap-y-[90px]">
+    <div
+      className="flex flex-col gap-y-[90px]"
+      style={{ marginLeft: "clamp(1rem, 4.9vw, 5rem)" }}
+    >
       <h2
-        className="text-center text-purple-100 font-bold"
+        className="text-center text-purple-100 font-bold leading-none"
         style={{
           margin: "0 clamp(1rem, 4.9vw, 5rem)",
           fontSize: "clamp(35px, 6vw, 55px)",
@@ -18,8 +21,8 @@ export default function WhySection() {
       >
         Why Choose Our Platform for Donations?
       </h2>
-      <div className="px-20 mb-64 flex items-center justify-between">
-        <div className="flex flex-col gap-y-24 w-[875px]">
+      <div className="mb-64 flex items-center justify-between gap-x-8">
+        <div className="flex flex-col gap-y-24">
           <div className="flex flex-col gap-y-11">
             <Pill text="✨ Find Your Relatives, Friends & neighbours Here" />
             <h1

@@ -29,7 +29,13 @@ export default function HeaderSection() {
   const pathname = usePathname();
 
   return (
-    <div className="flex justify-between items-center mx-20 py-8 mb-44 border-b-[1px] border-neutral-11">
+    <div
+      className="flex justify-between items-center py-8 mb-44 border-b-[1px] border-neutral-11"
+      style={{
+        marginLeft: "clamp(1rem, 4.9vw, 5rem)",
+        marginRight: "clamp(1rem, 4.9vw, 5rem)",
+      }}
+    >
       <div className="flex gap-[6px] items-center">
         <Image src={Logo} width={40} height={40} alt="logo" />
         <span className="text-2xl">zakaat</span>

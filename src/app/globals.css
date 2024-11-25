@@ -74,3 +74,22 @@
     max-width: 1440px;
   }
 }
+
+/* For screens from 768px to 1440px */
+@media (min-width: 768px) {
+  ._1732552838251 {
+    row-gap: clamp(25px, 3.19vw, 45px);
+  }
+
+  ._1732555389106 {
+    object-fit: "cover";
+    width: clamp(233px, 27.96vw, 371px);
+  }
+}
+
+/* For screens from 375px to 768px */
+@media (min-width: 375px) and (max-width: 768px) {
+  ._1732552838251 {
+    row-gap: calc(70px - clamp(25px, 6.25vw, 45px));
+  }
+}
