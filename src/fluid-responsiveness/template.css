@@ -1,13 +1,13 @@
 /* For screens from 768px to 1440px */
 @media (min-width: 768px) and (max-width: 1440px) {
-  ._1732555389106 {
-    font-size: clamp(233px, 27.96vw, 371px);
+  ._1732591405841 {
+    font-size: clamp(1px, 0.85vw, 80px);
   }
 }
 
 /* For screens from 375px to 768px */
 @media (min-width: 375px) and (max-width: 768px) {
-  ._1732555389106 {
-    font-size: calc(604px - clamp(233px, 54.79vw, 371px));
+  ._1732591405841 {
+    font-size: calc(17px - clamp(1px, 0.75vw, 16px));
   }
 }

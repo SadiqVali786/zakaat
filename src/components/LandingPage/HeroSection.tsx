@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 import iPhoneHero from "@/../public/iPhoneHero.png";
 import GooglePlay from "@/../public/googlePlay.png";
@@ -10,20 +9,17 @@ import Pill from "./Pill";
 export default function HeroSection() {
   return (
     <div
-      className="mb-64 flex items-center justify-between gap-x-4 gap-y-11 flex-col md:flex-row"
+      className="mb-64 flex items-center justify-between gap-x-4 gap-y-11 flex-col md:flex-row hero-margin-right"
       style={{ marginLeft: "clamp(1rem, 4.9vw, 5rem)" }}
     >
       <div
         className="flex flex-col"
         style={{ rowGap: "clamp(45px, 6.05vw, 90px)" }}
       >
-        <div className="flex flex-col _1732552838251">
+        <div className="flex flex-col hero-left-items-row-gap">
           <Pill
             text="✨ Find Deserving Zakaat Recipients Here"
-            style={{
-              paddingTop: "clamp(6px, 0.66vw, 8px)",
-              paddingBottom: "clamp(6px, 0.66vw, 8px)",
-            }}
+            className="mx-0 text-center sm:mx-auto"
           />
           <h1
             className="leading-none font-bold"
@@ -72,7 +68,7 @@ export default function HeroSection() {
         alt="Hero iPhone"
         src={iPhoneHero}
         // style={{ objectFit: "cover", width: "clamp(233px, 28vw, 370px)" }}
-        className="_1732555389106"
+        className="iphone-img-width-media-query"
       />
     </div>
   );

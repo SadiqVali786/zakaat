@@ -41,7 +41,7 @@ const Accordion = ({
       />
       <div
         className={`transition-all duration-500 overflow-hidden text-[#c4c0fb] leading-normal ${
-          isOpen ? "max-h-[200px] opacity-100 mt-5" : "max-h-0 opacity-0"
+          isOpen ? "max-h-[300px] opacity-100 mt-5" : "max-h-0 opacity-0"
         }`}
       >
         {answer}

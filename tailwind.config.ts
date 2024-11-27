@@ -11,11 +11,13 @@ export default {
   theme: {
     extend: {
       screens: {
+        "3xl": "2560px",
         "2xl": "1440px",
         xl: "1200px",
-        lg: "1000px",
+        lg: "900px",
         md: "768px",
-        sm: "375px",
+        sm: "451px",
+        xs: "375px",
       },
       colors: {
         background: "hsl(var(--background))",

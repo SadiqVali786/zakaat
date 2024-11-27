@@ -40,9 +40,12 @@ export default function FaqsSection() {
       }}
     >
       <div className="flex flex-col gap-y-11">
-        <Pill text="✨ Frequently Asked Questions " />
+        <Pill
+          text="✨ Frequently Asked Questions"
+          className="mx-0 text-center sm:mx-auto"
+        />
         <h1
-          className="leading-none font-bold text-center"
+          className="leading-none font-bold md:text-center"
           style={{ fontSize: "clamp(35px, 6vw, 55px)" }}
         >
           <span className="text-blue-200">

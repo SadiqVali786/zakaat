@@ -3,19 +3,19 @@ import React from "react";
 export default function Pill({
   text,
   className,
-  style,
 }: {
   text: string;
   className?: string;
-  style: { paddingTop: string; paddingBottom: string };
 }) {
   return (
     <div
-      className={`mx-auto p-[1px] bg-gradient-to-r from-[#4135F3] to-[#BE52F2] rounded-full ${className}`}
+      className={`p-[1px] bg-gradient-to-r from-[#4135F3] to-[#BE52F2] rounded-full ${className}`}
     >
       <p
-        className="text-base bg-brand-dark px-5 rounded-full text-blue-100 leading-tight"
-        style={style}
+        className="text-[15px] bg-brand-dark px-5 rounded-full text-blue-100 leading-tight"
+        style={{
+          padding: "clamp(6px, 0.66vw, 8px) clamp(10px, 1.34vw, 20px)",
+        }}
       >
         {text}
       </p>

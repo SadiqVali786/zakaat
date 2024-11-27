@@ -116,12 +116,22 @@ import Image from "next/image";
 
 export default function FeaturesSection() {
   return (
-    <div className="mb-64 mx-20 flex flex-col gap-y-24 items-center">
+    <div
+      className="mb-64 flex flex-col gap-y-24 items-center"
+      style={{
+        margin: "clamp(1rem, 4.9vw, 5rem)",
+      }}
+    >
       <div className="flex flex-col gap-y-11">
-        <Pill text="✨ Features of Zakaat Platform" />
+        <Pill
+          text="✨ Features of Zakaat Platform"
+          className="mx-0 text-center sm:mx-auto"
+        />
         <h1
-          className="leading-none font-bold text-center max-w-[888px]"
-          style={{ fontSize: "clamp(35px, 6vw, 55px)" }}
+          className="leading-none font-bold md:text-center max-w-[888px]"
+          style={{
+            fontSize: "clamp(35px, 6vw, 55px)",
+          }}
         >
           <span className="text-blue-200">Streamlined tools, </span>
           <span className="text-purple-200">

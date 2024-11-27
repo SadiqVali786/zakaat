@@ -49,4 +49,4 @@ const fluidity = ({ des, tes, mes }) => {
   writeFileSync("template.css", template);
 };
 
-fluidity({ des: 371, tes: 233, mes: 371 });
+fluidity({ des: 80, tes: 1, mes: 16 });

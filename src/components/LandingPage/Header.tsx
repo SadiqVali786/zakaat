@@ -5,6 +5,16 @@ import Image from "next/image";
 import Button from "../Button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import HamburgerMenu from "@/../public/Icons/hamburgerMenu.png";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navigation = [
   {
@@ -38,9 +48,9 @@ export default function HeaderSection() {
     >
       <div className="flex gap-[6px] items-center">
         <Image src={Logo} width={40} height={40} alt="logo" />
-        <span className="text-2xl">zakaat</span>
+        <span className="text-2xl hidden sm:block">zakaat</span>
       </div>
-      <ul className="flex items-center gap-x-4 border rounded-full px-8 py-4">
+      <ul className="lg:flex items-center gap-x-4 border rounded-full px-8 py-4 hidden">
         {navigation.map((link) => (
           <Link
             key={link.title}
@@ -72,6 +82,17 @@ export default function HeaderSection() {
             Sign Up
           </span>
         </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Image src={HamburgerMenu} alt={"hamberger menu"} />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-brand-dark border-neutral-11 text-neutral-7 flex flex-col">
+            <DropdownMenuItem className="text-lg">Home</DropdownMenuItem>
+            <DropdownMenuItem className="text-lg">About</DropdownMenuItem>
+            <DropdownMenuItem className="text-lg">Download</DropdownMenuItem>
+            <DropdownMenuItem className="text-lg">Contact Us</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
