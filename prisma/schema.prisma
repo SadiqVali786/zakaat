@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,22 +7,151 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Application {
-  id        String   @id @default(cuid())
-  selfie    String
-  doorNum   String
-  colony    String
-  landmark  String
-  village   String
-  mandal    String
-  district  String
-  state     String
-  pincode   String
-  longitude String
-  latitude  String
-  amount    String
-  reason    String
-  hide      Boolean  @default(false)
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  selfie   String
+  phoneNum String
+  role     ROLE
+  donor    Donor?
+  acceptor Acceptor?
+  verifier Verifier?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Acceptor {
+  userId       String        @unique
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hide         Boolean       @default(false)
+  applicaitons Application[]
+
+  @@id([userId])
+}
+
+model Verifier {
+  userId               String        @unique
+  user                 User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verifiedApplications Application[]
+
+  @@id([userId])
+}
+
+model Donor {
+  userId     String        @unique
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username   String        @unique
+  numOfPosts Int           @default(0)
+  bio        String
+  tweets     Tweet[]
+  donated    Application[] @relation("donated")
+  bookmarks  Application[] @relation("bookmarks")
+  followers  Donor[]       @relation("Followers")
+  following  Donor[]       @relation("Followers")
+
+  @@id([userId])
+}
+
+model Tweet {
+  id        String @id @default(cuid())
+  text      String
+  tweetedBy String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  TweetedBy Donor @relation(fields: [tweetedBy], references: [userId], onDelete: Cascade)
+}
+
+model Application {
+  id             String    @id @default(cuid())
+  amount         String
+  reason         String
+  status         STATUS
+  bookmarkedById String?
+  donatedById    String?
+  verifiedById   String?
+  acceptorId     String
+  Acceptor       Acceptor  @relation(fields: [acceptorId], references: [userId])
+  Verifier       Verifier? @relation(fields: [verifiedById], references: [userId])
+  DonatedBy      Donor?    @relation(name: "donated", fields: [donatedById], references: [userId])
+  BookmarkedBy   Donor?    @relation(name: "bookmarks", fields: [bookmarkedById], references: [userId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id         String @id @default(cuid())
+  doorNumber String
+  colony     String
+  landmark   String
+  village    String
+  mandal     String
+  district   String
+  state      String
+  pincode    String
+  latitude   String
+  longitude  String
+}
+
+enum STATUS {
+  CREATED
+  DONATED
+  VERIFIED
+  BOOKMARKED
+}
+
+enum ROLE {
+  ADMIN
+  DONOR
+  ACCEPTOR
+  VERIFIER
 }
