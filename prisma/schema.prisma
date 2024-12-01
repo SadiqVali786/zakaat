@@ -8,128 +8,63 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-
+  id       String @id @default(cuid())
+  role     ROLE
   selfie   String
   phoneNum String
-  role     ROLE
-  donor    Donor?
-  acceptor Acceptor?
-  verifier Verifier?
+
+  // DONOR Specific
+  bio       String?
+  bookmarks Application[] @relation("Bookmarks")
+  donations Application[] @relation("Donations")
+  followers User[]        @relation("Followers")
+  following User[]        @relation("Followers")
+  tweets    Tweet[]
+
+  // ACCEPTOR Specific
+  address      Address?
+  applications Application[] @relation("ZakaatApplications")
+
+  // VERIFIER Specific
+  verifiedApplications Application[] @relation("ApplicationVerification")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model Account {
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([provider, providerAccountId])
-}
-
-model Session {
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@id([identifier, token])
-}
-
-model Acceptor {
-  userId       String        @unique
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hide         Boolean       @default(false)
-  applicaitons Application[]
-
-  @@id([userId])
-}
-
-model Verifier {
-  userId               String        @unique
-  user                 User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  verifiedApplications Application[]
-
-  @@id([userId])
-}
-
-model Donor {
-  userId     String        @unique
-  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  username   String        @unique
-  numOfPosts Int           @default(0)
-  bio        String
-  tweets     Tweet[]
-  donated    Application[] @relation("donated")
-  bookmarks  Application[] @relation("bookmarks")
-  followers  Donor[]       @relation("Followers")
-  following  Donor[]       @relation("Followers")
-
-  @@id([userId])
-}
-
-model Tweet {
-  id        String @id @default(cuid())
-  text      String
-  tweetedBy String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  TweetedBy Donor @relation(fields: [tweetedBy], references: [userId], onDelete: Cascade)
 }
 
 model Application {
-  id             String    @id @default(cuid())
-  amount         String
-  reason         String
-  status         STATUS
-  bookmarkedById String?
-  donatedById    String?
-  verifiedById   String?
-  acceptorId     String
-  Acceptor       Acceptor  @relation(fields: [acceptorId], references: [userId])
-  Verifier       Verifier? @relation(fields: [verifiedById], references: [userId])
-  DonatedBy      Donor?    @relation(name: "donated", fields: [donatedById], references: [userId])
-  BookmarkedBy   Donor?    @relation(name: "bookmarks", fields: [bookmarkedById], references: [userId])
+  id                String  @id @default(cuid())
+  authorId          String
+  amount            String
+  reason            String
+  status            STATUS
+  hide              Boolean @default(false)
+  bookmarkedDonorId String?
+  donatedDonorId    String?
+  verifiedByUserId  String?
+
+  bookmarkedBy User? @relation("Bookmarks", fields: [bookmarkedDonorId], references: [id])
+  donatedBy    User? @relation("Donations", fields: [donatedDonorId], references: [id])
+  verifiedBy   User? @relation("ApplicationVerification", fields: [verifiedByUserId], references: [id])
+  author       User  @relation("ZakaatApplications", fields: [authorId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+model Tweet {
+  id            String @id @default(cuid())
+  text          String
+  tweetAuthorId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  TweetedBy User @relation(fields: [tweetAuthorId], references: [id], onDelete: Cascade)
+}
+
 model Address {
-  id         String @id @default(cuid())
+  userId     String @unique
   doorNumber String
   colony     String
   landmark   String
@@ -140,6 +75,10 @@ model Address {
   pincode    String
   latitude   String
   longitude  String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId])
 }
 
 enum STATUS {
@@ -155,3 +94,122 @@ enum ROLE {
   ACCEPTOR
   VERIFIER
 }
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+// model User {
+//   id       String    @id @default(cuid())
+//   selfie   String
+//   phoneNum String
+//   role     ROLE
+//   donor    Donor?
+//   acceptor Acceptor?
+//   verifier Verifier?
+//   address  Address?
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Acceptor {
+//   userId       String        @unique
+//   hide         Boolean       @default(false)
+//   applications Application[]
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@id([userId])
+// }
+
+// model Verifier {
+//   userId               String        @unique
+//   verifiedApplications Application[]
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@id([userId])
+// }
+
+// model Donor {
+//   userId      String        @unique
+//   numOfTweets Int           @default(0)
+//   bio         String
+//   tweets      Tweet[]
+//   donated     Application[] @relation("donated")
+//   bookmarks   Application[] @relation("bookmarks")
+//   followers   Donor[]       @relation("Followers")
+//   following   Donor[]       @relation("Followers")
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@id([userId])
+// }
+
+// model Tweet {
+//   id                 String @id @default(cuid())
+//   text               String
+//   tweeteAuthorUserId String
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   TweetedBy Donor @relation(fields: [tweeteAuthorUserId], references: [userId], onDelete: Cascade)
+// }
+
+// model Application {
+//   id                    String  @id @default(cuid())
+//   amount                String
+//   reason                String
+//   status                STATUS
+//   bookmarkedDonorUserId String?
+//   donatedDonorUserId    String?
+//   verifierUserId        String?
+//   acceptorId            String
+
+//   Acceptor     Acceptor  @relation(fields: [acceptorId], references: [userId], onDelete: Cascade)
+//   Verifier     Verifier? @relation(fields: [verifierUserId], references: [userId], onDelete: Cascade)
+//   DonatedBy    Donor?    @relation(name: "donated", fields: [donatedDonorUserId], references: [userId])
+//   BookmarkedBy Donor?    @relation(name: "bookmarks", fields: [bookmarkedDonorUserId], references: [userId])
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Address {
+//   userId     String @unique
+//   doorNumber String
+//   colony     String
+//   landmark   String
+//   village    String
+//   mandal     String
+//   district   String
+//   state      String
+//   pincode    String
+//   latitude   String
+//   longitude  String
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@id([userId])
+// }
+
+// enum STATUS {
+//   CREATED
+//   DONATED
+//   VERIFIED
+//   BOOKMARKED
+// }
+
+// enum ROLE {
+//   ADMIN
+//   DONOR
+//   ACCEPTOR
+//   VERIFIER
+// }
