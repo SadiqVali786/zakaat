@@ -3,7 +3,7 @@ import { DM_Sans } from "next/font/google";
 import { twMerge } from "tailwind-merge";
 
 import "@/app/globals.css";
-import { ThemeProvider } from "@/lib/providers/theme-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 import RightSidebar from "@/components/dashboard/RightSidebar";
 import LeftSidebar from "@/components/dashboard/LeftSidebar";
 
