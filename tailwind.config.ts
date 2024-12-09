@@ -11,14 +11,21 @@ export default {
   theme: {
     extend: {
       screens: {
-        "3xl": "2560px",
-        "2xl": "1440px",
-        xl: "1200px",
-        lg: "900px",
-        md: "768px",
-        sm: "451px",
-        xs: "375px",
+        xl: "1312px", // desktop
+        lg: "1026px", // laptop
+        md: "900px", // tablet
+        sm: "680px", // tablet
+        xs: "500px", // cell
       },
+      // screens: {
+      //   "3xl": "2560px", // 1280
+      //   "2xl": "1440px", // 995
+      //   xl: "1200px", // 500
+      //   lg: "900px",
+      //   md: "768px",
+      //   sm: "451px",
+      //   xs: "375px",
+      // },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

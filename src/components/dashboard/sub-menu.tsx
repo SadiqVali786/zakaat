@@ -1,19 +1,30 @@
-import Image from "next/image";
-import More from "@/../public/Icons/dashboard/more_horizontal_shade.png";
-import Tweets from "@/../public/Icons/dashboard/snowflake.png";
+"use client";
 
-export default function SubMenu() {
+import Image, { StaticImageData } from "next/image";
+import More from "@/../public/Icons/dashboard/more_horizontal_shade.png";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+
+type PropTypes = {
+  title: string;
+  icon: StaticImageData;
+  path: string;
+};
+
+export default function SubMenu({ title, icon, path }: PropTypes) {
+  const pathname = usePathname();
+
   return (
-    <div className="flex justify-between">
-      <div className="w-8"></div>
-      <div className="flex flex-col flex-grow">
-        <div className="flex items-center justify-between p-[10px]">
-          <div className="flex items-center gap-x-2">
-            <Image src={Tweets} alt="tweets icon" />
-            <span>Tweets</span>
-          </div>
-          <Image src={More} alt="more" />
-        </div>
+    <div
+      className={cn(
+        "flex items-center gap-x-2 py-[10px] lg:px-[10px]",
+        pathname.includes(path) ? "bg-neutral-11" : ""
+      )}
+    >
+      <Image src={icon} alt="tweets icon" />
+      <div className="lg:flex items-center grow justify-between hidden gap-x-2">
+        <span>{title}</span>
+        <Image src={More} alt="more" />
       </div>
     </div>
   );

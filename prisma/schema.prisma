@@ -1,67 +1,87 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 model User {
-  id        String @id @default(cuid())
+  id        String    @id @default(cuid()) @map("_id")
   role      ROLE
   selfie    String
-  phoneNum  String @unique
+  phoneNum  String    @unique
+  fullname  String
   latitude  Float
   longitude Float
+  donor     Donor?
+  acceptor  Acceptor?
+  verifier  Verifier?
+}
 
-  // DONOR Specific
-  tweets    Tweet[]
-  bookmarks Application[] @relation("Bookmarks")
-  donations Application[] @relation("Donations")
-  followers User[]        @relation("Followers")
-  following User[]        @relation("Followers")
+model Donor {
+  userId      String        @map("_id")
+  tweets      Tweet[]
+  bookmarks   Application[] @relation("bookmarked")
+  donations   Application[] @relation("donated")
+  connections Connection[]
 
-  // ACCEPTOR Specific
-  applications Application[] @relation("ZakaatApplications")
+  User User @relation(fields: [userId], references: [id])
 
-  // VERIFIER Specific
-  verifiedApplications Application[] @relation("ApplicationVerification")
+  @@id([userId])
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Connection {
+  connectionUserId String @map("_id")
+
+  Connection Donor @relation(fields: [connectionUserId], references: [userId])
+
+  @@id([connectionUserId])
+}
+
+model Acceptor {
+  userId      String       @map("_id")
+  application Application?
+
+  User User @relation(fields: [userId], references: [id])
+
+  @@id([userId])
+}
+
+model Verifier {
+  userId       String        @map("_id")
+  applications Application[]
+
+  User User @relation(fields: [userId], references: [id])
+
+  @@id([userId])
 }
 
 model Application {
-  id                   String  @id @default(cuid())
-  authorId             String
-  amount               Int
-  reason               String
-  status               STATUS
-  hide                 Boolean @default(false)
-  rating               Int
-  bookmarkedByDonorId  String?
-  donatedByDonorId     String?
-  verifiedByVerifierId String?
+  id               String  @id @default(cuid()) @map("_id")
+  authorId         String  @unique
+  amount           String
+  reason           String
+  status           STATUS
+  hide             Boolean @default(false)
+  rating           Int
+  bookmarkedUserId String?
+  verifierUserId   String?
+  donatedUserId    String?
 
-  bookmarkedBy User? @relation("Bookmarks", fields: [bookmarkedByDonorId], references: [id])
-  donatedBy    User? @relation("Donations", fields: [donatedByDonorId], references: [id])
-  verifiedBy   User? @relation("ApplicationVerification", fields: [verifiedByVerifierId], references: [id])
-  author       User  @relation("ZakaatApplications", fields: [authorId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  DonatedBy  Donor?    @relation("donated", fields: [donatedUserId], references: [userId])
+  VerifiedBy Verifier? @relation(fields: [verifierUserId], references: [userId])
+  Author     Acceptor  @relation(fields: [authorId], references: [userId])
+  Donor      Donor?    @relation("bookmarked", fields: [bookmarkedUserId], references: [userId])
 }
 
 model Tweet {
-  id            String @id @default(cuid())
-  text          String
-  tweetAuthorId String
+  id       String @id @default(cuid()) @map("_id")
+  text     String
+  authorId String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  TweetedBy User @relation(fields: [tweetAuthorId], references: [id], onDelete: Cascade)
+  Donor Donor? @relation(fields: [authorId], references: [userId])
 }
 
 enum STATUS {
@@ -77,3 +97,155 @@ enum ROLE {
   ACCEPTOR
   VERIFIER
 }
+
+// @updatedAt
+// @unique
+// @default(now())
+// @@unique([name, age])
+// @@index([email, name])
+// @@id([email, name])
+// ########################################################
+// ##################### MANY TO MANY #####################
+// ########################################################
+// model User {
+//   id           String @id @default(uuid())
+//   writtenPosts Post[]
+// }
+
+// model Post {
+//   id      String @id @default(uuid())
+//   authors User[]
+// }
+
+// ########################################################
+// ##################### ONE TO MANY ######################
+// ########################################################
+// model User {
+//   id           String @id @default(uuid())
+//   writtenPosts Post[]
+// }
+
+// model Post {
+//   id       String @id @default(uuid())
+//   authorId String
+//   author   User   @relation(fields: [authorId], references: [id])
+// }
+
+// ########################################################
+// #################### 2 ONE TO MANY #####################
+// ########################################################
+// model User {
+//   id             String @id @default(uuid())
+//   writtenPosts   Post[] @relation("WrittenPosts")
+//   favouritePosts Post[] @relation("FavouritePosts")
+// }
+
+// model Post {
+//   id          String  @id @default(uuid())
+//   authorId    String
+//   favouriteId String?
+//   author      User    @relation("WrittenPosts", fields: [authorId], references: [id])
+//   favourite   User?   @relation("FavouritePosts", fields: [favouriteId], references: [id])
+// }
+
+// ########################################################
+// ###################### ONE TO ONE ######################
+// ########################################################
+// model User {
+//   id   String @id @default(uuid())
+//   post Post?
+// }
+
+// model Post {
+//   id           String @id @default(uuid())
+//   postAuthorId String @unique
+//   author       User   @relation(fields: [postAuthorId], references: [id])
+// }
+
+// model User {
+//   id            String @id @default(uuid())
+//   writtenPostId String @unique
+//   post          Post   @relation(fields: [writtenPostId], references: [id])
+// }
+
+// model Post {
+//   id     String @id @default(uuid())
+//   author User?
+// }
+
+// ########################################################
+// ########################################################
+// ###################### POSTGRESQL ######################
+// ########################################################
+// ########################################################
+
+// model User {
+//   id        String @id @default(cuid()) @map("_id")
+//   role      ROLE
+//   selfie    String
+//   phoneNum  String @unique
+//   latitude  Float
+//   longitude Float
+
+//   // DONOR Specific
+//   tweets    Tweet[]
+//   bookmarks Application[] @relation("Bookmarks")
+//   donations Application[] @relation("Donations")
+//   followers User[]        @relation("Followers")
+//   following User[]        @relation("Followers")
+
+//   // ACCEPTOR Specific
+//   applications Application[] @relation("ZakaatApplications")
+
+//   // VERIFIER Specific
+//   verifiedApplications Application[] @relation("ApplicationVerification")
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Application {
+//   id                   String  @id @default(cuid()) @map("_id")
+//   authorId             String
+//   amount               Int
+//   reason               String
+//   status               STATUS
+//   hide                 Boolean @default(false)
+//   rating               Int
+//   bookmarkedByDonorId  String?
+//   donatedByDonorId     String?
+//   verifiedByVerifierId String?
+
+//   bookmarkedBy User? @relation("Bookmarks", fields: [bookmarkedByDonorId], references: [id])
+//   donatedBy    User? @relation("Donations", fields: [donatedByDonorId], references: [id])
+//   verifiedBy   User? @relation("ApplicationVerification", fields: [verifiedByVerifierId], references: [id])
+//   author       User  @relation("ZakaatApplications", fields: [authorId], references: [id])
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Tweet {
+//   id            String @id @default(cuid()) @map("_id")
+//   text          String
+//   tweetAuthorId String
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   TweetedBy User @relation(fields: [tweetAuthorId], references: [id], onDelete: Cascade)
+// }
+
+// enum STATUS {
+//   CREATED
+//   DONATED
+//   VERIFIED
+//   BOOKMARKED
+// }
+
+// enum ROLE {
+//   ADMIN
+//   DONOR
+//   ACCEPTOR
+//   VERIFIER
+// }

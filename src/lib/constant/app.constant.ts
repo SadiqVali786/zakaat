@@ -1,8 +1,7 @@
 import APP_PATHS from "@/config/path.config";
-import adobe from "../../../public/adobe.svg";
-import atlassian from "../../../public/atlassian.svg";
+import { ICONS } from "../icons";
 
-export const GITHUB_REPO = "https://github.com/----";
+// export const GITHUB_REPO = "https://github.com/----";
 
 export const navbar = [
   { id: 1, label: "Home", path: APP_PATHS.HOME },
@@ -13,52 +12,77 @@ export const navbar = [
 
 export const donorSidebar = [
   {
-    Dashboard: [
-      { id: 1, label: "Tweets", path: APP_PATHS.HOME },
-      { id: 2, label: "Notifications", path: APP_PATHS.ABOUT },
-      { id: 3, label: "Following Tweets", path: APP_PATHS.DOWNLOAD },
-      { id: 7, label: "Following", path: APP_PATHS.CONTACT_US },
-      { id: 4, label: "Saved Applications", path: APP_PATHS.CONTACT_US },
-      { id: 5, label: "Genuine Applications", path: APP_PATHS.CONTACT_US },
-      { id: 6, label: "Unverified Applications", path: APP_PATHS.CONTACT_US },
-    ],
-    Settings: [
-      { id: 1, label: "Profile", path: APP_PATHS.CONTACT_US },
-      { id: 2, label: "Edit Profile", path: APP_PATHS.CONTACT_US },
-      { id: 3, label: "Donations History", path: APP_PATHS.CONTACT_US },
-    ],
+    id: 1,
+    label: "Zakaat Applications",
+    path: APP_PATHS.ZAKAAT_APPLICATIONS,
+    icon: ICONS["zakaat-applications"],
+  },
+  {
+    id: 2,
+    label: "Bookmarks",
+    path: APP_PATHS.BOOKMARKED_APPLICATIONS,
+    icon: ICONS.bookmarks,
+  },
+  {
+    id: 3,
+    label: "My Profile",
+    path: APP_PATHS.DONOR_PROFILE,
+    icon: ICONS["my-profile"],
+  },
+  {
+    id: 4,
+    label: "My Connections",
+    path: APP_PATHS.MY_CONNECTIONS,
+    icon: ICONS["my-connections"],
+  },
+  {
+    id: 5,
+    label: "Donations History",
+    path: APP_PATHS.DONATIONS_HISTORY,
+    icon: ICONS["donations-history"],
   },
 ];
 
 export const verifierSidebar = [
   {
-    Dashboard: [
-      { id: 1, label: "Apply", path: APP_PATHS.HOME },
-      { id: 2, label: "Search By Photo", path: APP_PATHS.ABOUT },
-      { id: 2, label: "Search By Phone Number", path: APP_PATHS.ABOUT },
-    ],
+    id: 1,
+    label: "Apply",
+    path: APP_PATHS.APPLY,
+    icon: ICONS["apply-zakaat-application"],
   },
-];
-
-export const acceptorSidebar = [
   {
-    Dashboard: [
-      { id: 1, label: "Apply", path: APP_PATHS.HOME },
-      { id: 2, label: "Profile", path: APP_PATHS.ABOUT },
-      { id: 2, label: "Bookmarked", path: APP_PATHS.ABOUT },
-      { id: 2, label: "My Applications", path: APP_PATHS.ABOUT },
-      { id: 2, label: "Donations History", path: APP_PATHS.ABOUT },
-    ],
+    id: 2,
+    label: "Search Applicant",
+    path: APP_PATHS.SEARCH_APPLICANT,
+    icon: ICONS["search-black"],
+  },
+  {
+    id: 2,
+    label: "My Profile",
+    path: APP_PATHS.VERIFIER_PROFILE,
+    icon: ICONS["my-profile"],
   },
 ];
 
 export const socials = [
   {
-    icon: adobe,
+    id: 1,
+    icon: ICONS.youtube,
     alt: "youtube",
     href: "https://www.youtube.com/@100xDevs-n1w",
   },
-  { icon: adobe, alt: "twitter", href: "https://x.com/100xDevs" },
+  {
+    id: 2,
+    icon: ICONS.twitter,
+    alt: "twitter",
+    href: "https://x.com/100xDevs",
+  },
+  {
+    id: 3,
+    icon: ICONS.facebook,
+    alt: "facebook",
+    href: "https://x.com/100xDevs",
+  },
 ];
 
 export const footerItems = [
@@ -90,15 +114,15 @@ export const footerItems = [
 
 export const trustedSocialActivists = [
   {
-    icon: adobe,
+    icon: ICONS.youtube,
     name: "Wali Rahmani",
   },
   {
-    icon: atlassian,
+    icon: ICONS.youtube,
     name: "HYC Salman Khan",
   },
   {
-    icon: atlassian,
+    icon: ICONS.youtube,
     name: "Real Miya Bhai",
   },
 ];

@@ -66,11 +66,6 @@
   }
 }
 
-.sadiq-container {
-  width: 100%;
-  max-width: 1440px;
-}
-
 /* For screens from 768px to INFINITYpx */
 @media (min-width: 768px) {
   .hero-left-items-row-gap {

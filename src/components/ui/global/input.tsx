@@ -7,7 +7,7 @@ const Input = () => (
     <input
       type="text"
       placeholder="Search tweets"
-      className="ml-2 text-neutral-7 font-dm text-xl bg-transparent outline-none w-full"
+      className="ml-2 placeholder:text-neutral-7 text-blue-50 font-dm text-xl bg-transparent outline-none w-full"
     />
   </div>
 );
