@@ -1,4 +1,4 @@
 export type testimonialItem = {
-  name: string;
+  fullname: string;
   testimonial: string;
 };

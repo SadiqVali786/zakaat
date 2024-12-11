@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/fluid-responsiveness/fluidity.js",
+    "src/lib/fluid-responsiveness/fluidity.js",
     "src/layouts"
   ],
   "exclude": ["node_modules"]

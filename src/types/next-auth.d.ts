@@ -1,29 +1,35 @@
-import NextAuth from 'next-auth';
+import { Location, ROLE } from "@prisma/client";
+import NextAuth from "next-auth";
 
-declare module 'next-auth' {
+declare module "next-auth" {
   interface User {
-    isVerified: boolean;
+    id: string;
+    oauthId: string;
     role: string;
-    onBoard: boolean;
+    fullname: string;
+    selfie: string;
+    phoneNum: string;
   }
   interface Session {
     user: {
       id: string;
-      email: string;
+      oauthId: string;
       role: string;
-      name: string;
-      isVerified: boolean;
-      image?: string;
-      onBoard: boolean;
+      fullname: string;
+      selfie: string;
+      phoneNum: string;
     };
   }
 }
 
-declare module 'next-auth/jwt' {
+declare module "next-auth/jwt" {
   interface JWT {
     id: string;
-    isVerified: boolean;
-    role: string;
-    onBoard: boolean;
+    fullname: string;
+    role: ROLE;
+    image: string;
+    selfie: string;
+    location: Location;
+    phoneNum: string;
   }
 }

@@ -32,10 +32,14 @@ import Minus from "@/../public/Icons/remove.png";
 import Youtube from "@/../public/Icons/youtube.png";
 import Twitter from "@/../public/Icons/twitter.png";
 import Facebook from "@/../public/Icons/facebook.png";
+import ChevronForward from "@/../public/Icons/chevron_forward_black.png";
+import CameraIcon from "@/../public/Icons/camera.png";
+import LocationIcon from "@/../public/Icons/location.png";
 
 // LOGOS
 import SmallLogo from "@/../public/Logo/Logo.png";
 import BigLogo from "@/../public/Logo/BigLogo.png";
+import GoogleLogo from "@/../public/Logo/google-logo.png";
 
 // IMAGES
 import AboutSection from "@/../public/images/AboutSection.png";
@@ -44,6 +48,8 @@ import googlePlay from "@/../public/images/googlePlay.png";
 import iPhoneHero from "@/../public/images/iPhoneHero.png";
 import iPhoneWhy from "@/../public/images/iPhoneWhy.png";
 import PlayButton from "@/../public/images/PlayButton.png";
+import SelfieInfoGraphic from "@/../public/images/selfie-info-graphic.png";
+import GPSInfoGraphic from "@/../public/images/gps-info-graphics.png";
 
 // BACKGROUND IMAGES
 import Ellipse from "@/../public/background/Ellipse.png";
@@ -82,11 +88,15 @@ export const ICONS = {
   youtube: Youtube,
   twitter: Twitter,
   facebook: Facebook,
+  "chevron-next": ChevronForward,
+  camera: CameraIcon,
+  location: LocationIcon,
 };
 
 export const LOGOS = {
   logo80: BigLogo,
   logo40: SmallLogo,
+  "google-logo": GoogleLogo,
 };
 
 export const IMAGES = {
@@ -97,6 +107,8 @@ export const IMAGES = {
   "i-phone-hero": iPhoneHero,
   "i-phone-why": iPhoneWhy,
   "play-button": PlayButton,
+  "selfie-info-graphic": SelfieInfoGraphic,
+  "gps-info-graphics": GPSInfoGraphic,
 };
 
 export const BACKGROUND_IMAGES = {

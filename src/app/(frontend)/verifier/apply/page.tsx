@@ -21,15 +21,7 @@ import { useRef } from "react";
 import { usePathname } from "next/navigation";
 import { ICONS } from "@/lib/icons";
 import Image from "next/image";
-
-// https://stackoverflow.com/a/73136517/10003545
-const MAX_FILE_SIZE = 5000000;
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
+import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/config/auth.config";
 
 const formSchema = z.object({
   fullname: z.string().trim().min(1, "username is required"),

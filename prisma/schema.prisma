@@ -8,16 +8,29 @@ generator client {
 }
 
 model User {
-  id        String    @id @default(cuid()) @map("_id")
-  role      ROLE
-  selfie    String
-  phoneNum  String    @unique
-  fullname  String
-  latitude  Float
-  longitude Float
-  donor     Donor?
-  acceptor  Acceptor?
-  verifier  Verifier?
+  id       String   @id @default(cuid()) @map("_id")
+  role     ROLE     @default(DONOR)
+  fullname String
+  phoneNum String   @unique
+  selfie   String
+  location Location
+  oauthId  String?  @unique
+
+  donor    Donor?
+  acceptor Acceptor?
+  verifier Verifier?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+type Location {
+  type        String  @default("Point") // Must be "Point" for geospatial queries
+  coordinates Float[] // @db.FloatArray    // [longitude, latitude]
+}
+
+enum OauthProvider {
+  GOOGLE
 }
 
 model Donor {
@@ -74,6 +87,9 @@ model Application {
   VerifiedBy Verifier? @relation(fields: [verifierUserId], references: [userId])
   Author     Acceptor  @relation(fields: [authorId], references: [userId])
   Donor      Donor?    @relation("bookmarked", fields: [bookmarkedUserId], references: [userId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Tweet {
@@ -82,6 +98,9 @@ model Tweet {
   authorId String
 
   Donor Donor? @relation(fields: [authorId], references: [userId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum STATUS {

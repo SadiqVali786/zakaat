@@ -4,8 +4,6 @@ import { twMerge } from "tailwind-merge";
 
 import "@/app/globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
-import HeaderSection from "@/components/LandingPage/Header";
-import FooterSection from "@/components/LandingPage/Footer";
 
 const dm_sans = DM_Sans({ subsets: ["latin"] });
 
@@ -25,7 +23,7 @@ export default function RootLayout({
       <body
         className={twMerge(
           dm_sans.className,
-          "antialiased flex flex-col text-blue-50 max-w-[1280px] min-h-screen mx-auto xs:px-4 overflow-x-hidden"
+          "antialiased flex justify-center items-center text-blue-50 max-w-[1280px] min-h-screen mx-auto xs:px-4 overflow-x-hidden"
         )}
       >
         <ThemeProvider
@@ -34,9 +32,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <HeaderSection />
           {children}
-          <FooterSection />
         </ThemeProvider>
       </body>
     </html>
