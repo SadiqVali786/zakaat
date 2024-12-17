@@ -1,7 +1,7 @@
 const APP_PATHS = {
   HOME: "/",
-  SIGNIN: "/signin",
-  SIGNUP: "/signup",
+  SIGNIN: "/auth/signin",
+  SIGNUP: "/auth/signup",
   ABOUT: "#about",
   DOWNLOAD: "/download",
   CONTACT_US: "mailto:rebirth4vali@gmail.com",
@@ -13,6 +13,7 @@ const APP_PATHS = {
   DONOR_PROFILE: "/donor/my-profile",
   MY_CONNECTIONS: "/donor/my-connections",
   DONATIONS_HISTORY: "/donor/donations-history",
+  WELCOME: "/auth/welcome",
 
   SEARCH_APPLICANT: "/verifier/search-applicant",
   APPLY: "/verifier/apply",

@@ -11,10 +11,10 @@ model User {
   id       String   @id @default(cuid()) @map("_id")
   role     ROLE     @default(DONOR)
   fullname String
-  phoneNum String   @unique
+  phoneNum String
   selfie   String
   location Location
-  oauthId  String?  @unique
+  email    String
 
   donor    Donor?
   acceptor Acceptor?
@@ -22,15 +22,14 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([phoneNum])
+  @@unique([email])
 }
 
 type Location {
   type        String  @default("Point") // Must be "Point" for geospatial queries
   coordinates Float[] // @db.FloatArray    // [longitude, latitude]
-}
-
-enum OauthProvider {
-  GOOGLE
 }
 
 model Donor {

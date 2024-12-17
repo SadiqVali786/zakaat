@@ -10,7 +10,8 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-export const signupSchema = z.object({
+export const signupFormSchema = z.object({
+  fullname: z.string().trim().min(1, "username is required"),
   phoneNum: z
     .string()
     .trim()
@@ -37,9 +38,9 @@ export const signupSchema = z.object({
   role: z.nativeEnum(ROLE),
 });
 
-export const editSignupSchema = signupSchema.partial().extend({
+export const editSignupSchema = signupFormSchema.partial().extend({
   id: z.string().cuid(),
 });
 
-export type SignupSchemaType = z.infer<typeof signupSchema>;
+export type SignupSchemaType = z.infer<typeof signupFormSchema>;
 export type EditSignupSchemaType = z.infer<typeof editSignupSchema>;

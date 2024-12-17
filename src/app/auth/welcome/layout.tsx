@@ -4,6 +4,10 @@ import { twMerge } from "tailwind-merge";
 
 import "@/app/globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { Provider } from "@radix-ui/react-toast";
+import { SessionProvider } from "next-auth/react";
+import AuthProvider from "@/providers/auth-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 const dm_sans = DM_Sans({ subsets: ["latin"] });
 
@@ -26,14 +30,17 @@ export default function RootLayout({
           "antialiased flex justify-center items-center text-blue-50 max-w-[1280px] min-h-screen mx-auto xs:px-4 overflow-x-hidden"
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import APP_PATHS from "@/config/path.config";
 import { LOGOS } from "@/lib/icons";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
@@ -7,7 +8,7 @@ import Image from "next/image";
 const SigninComponent = () => {
   const handleGoogleSignIn = async () => {
     try {
-      await signIn("google", { callbackUrl: "/auth/signup" });
+      await signIn("github", { callbackUrl: APP_PATHS.WELCOME });
     } catch (error) {
       console.error("Sign-in failed:", error);
     }
