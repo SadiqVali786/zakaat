@@ -17,83 +17,47 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { useRef } from "react";
-import { usePathname } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import { redirect, usePathname } from "next/navigation";
 import { ICONS } from "@/lib/icons";
 import Image from "next/image";
-import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/config/auth.config";
-
-const formSchema = z.object({
-  fullname: z.string().trim().min(1, "username is required"),
-  upiPhoneNum: z
-    .string()
-    .trim()
-    .regex(/^\d{10}$/, "Phone number must be exactly 10 digits."),
-  selfie: z
-    .instanceof(File)
-    .refine((file) => file.size <= MAX_FILE_SIZE, "Max image size is 5MB.")
-    .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
-      "Only .jpg, .jpeg, .png, and .webp formats are supported."
-    ),
-  latitude: z
-    .number()
-    .refine(
-      (num) => num >= -90 && num <= 90,
-      "Latitude must be a valid decimal coordinate."
-    ),
-  longitude: z
-    .number()
-    .refine(
-      (num) => num >= -180 && num <= 180,
-      "Longitude must be a valid decimal coordinate."
-    ),
-  amount: z
-    .string()
-    .transform((val) => parseFloat(val))
-    .refine(
-      (num) => !isNaN(num) && num > 0,
-      "Amount must be a positive number."
-    )
-    .refine(
-      (num) => num.toFixed(2).length <= 10,
-      "Amount must not exceed a valid range."
-    ),
-  reason: z.string().trim().max(300, "Reason must not exceed 300 characters."),
-  hide: z.boolean().default(false).optional(),
-});
+import { useSession } from "next-auth/react";
+import APP_PATHS from "@/config/path.config";
+import { ROLE } from "@prisma/client";
+import { createApplicationAction } from "@/actions/application.actions";
+import { applicationSchema } from "@/lib/validators/application.validator";
 
 const FormWithShadcn = () => {
-  const gpsRef = useRef<HTMLInputElement | null>(null);
-  const pathname = usePathname();
-  const length = pathname.split("/").length;
+  const session = useSession();
+  const [actionState, action, isPending] = useActionState(
+    createApplicationAction,
+    null
+  );
 
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof applicationSchema>>({
+    resolver: zodResolver(applicationSchema),
     defaultValues: {},
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  async function onSubmit(values: z.infer<typeof applicationSchema>) {
     console.log(values);
+    await action(values);
+    console.log({ actionState });
   }
 
-  const setLatAndLongValues = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          form.setValue("latitude", position.coords.latitude);
-          form.setValue("longitude", position.coords.longitude);
-          if (gpsRef.current)
-            gpsRef.current.value = `${position.coords.latitude}, ${position.coords.longitude}`;
-        },
-        (error) => console.error("Error fetching GPS values:", error)
-      );
-    } else console.error("Geolocation is not supported by this browser.");
-  };
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      if (!session || !session.data?.user) redirect(APP_PATHS.SIGNIN);
+      if (!session.data.user.phoneNum) redirect(APP_PATHS.WELCOME);
+      if (session.data.user.role !== ROLE.VERIFIER) redirect(APP_PATHS.HOME);
+    }
+    if (session.status === "unauthenticated") redirect(APP_PATHS.SIGNIN);
+  }, [session, form]);
+
+  const pathname = usePathname();
+  const length = pathname.split("/").length;
 
   return (
     <div className="h-full grow xs:border-x-[1px] border-neutral-11 max-w-[708px]">
@@ -112,23 +76,7 @@ const FormWithShadcn = () => {
         >
           <FormField
             control={form.control}
-            name="fullname"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="Full Name"
-                    {...field}
-                    className="bg-neutral-11 text-blue-50 !text-lg"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="upiPhoneNum"
+            name="phoneNum"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>
@@ -136,73 +84,6 @@ const FormWithShadcn = () => {
                     placeholder="UPI Phone Number"
                     {...field}
                     className="bg-neutral-11 text-blue-50 !text-lg"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex w-full" onClick={setLatAndLongValues}>
-            <input
-              type="text"
-              className="block px-4 py-2 text-blue-50 rounded-lg shadow-sm placeholder-neutral-6/99 focus:ring-1 focus:ring-blue-50 focus:border-blue-50 focus:outline-none bg-neutral-11 text-lg max-h-9 w-full"
-              readOnly
-              placeholder="Click here to Fetch Latitude, Longitude"
-              ref={gpsRef}
-            />
-            <FormField
-              control={form.control}
-              name="latitude"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      readOnly
-                      placeholder="Latitude"
-                      className="bg-neutral-11 text-blue-50 !text-lg hidden"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="longitude"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      readOnly
-                      placeholder="Longitude"
-                      className="bg-neutral-11 text-blue-50 !text-lg hidden"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <FormField
-            control={form.control}
-            name="selfie"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="file"
-                    accept=".jpg, .jpeg, .png, .webp"
-                    className="bg-neutral-11 text-neutral-7 !text-lg"
-                    value={undefined}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      field.onChange(file);
-                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -239,6 +120,22 @@ const FormWithShadcn = () => {
                     className="placeholder:text-neutral-7 text-blue-50 flex-grow resize-none border-transparent focus:border-transparent focus:ring-0 outline-none overflow-hidden bg-neutral-11 w-full !text-lg placeholder:text-lg"
                     rows={6}
                     {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="rating"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl>
+                  <Input
+                    placeholder="Application Rating out of 10"
+                    {...field}
+                    className="bg-neutral-11 text-blue-50 !text-lg"
                   />
                 </FormControl>
                 <FormMessage />

@@ -27,11 +27,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     session({ session, token }) {
       if (token && session && session.user) {
         if (token?.phoneNum) {
-          session.user.id = token.email as string;
+          session.user.id = token.id as string;
           session.user.role = token.role as ROLE;
           session.user.fullname = token.fullname as string;
           session.user.phoneNum = token.phoneNum as string;
           session.user.selfie = token.selfie as string;
+          delete session.user.name;
+          delete session.user.image;
+          delete session.user.email;
         }
       }
       return session;

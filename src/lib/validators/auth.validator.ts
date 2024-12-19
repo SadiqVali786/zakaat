@@ -37,10 +37,3 @@ export const signupFormSchema = z.object({
     ),
   role: z.nativeEnum(ROLE),
 });
-
-export const editSignupSchema = signupFormSchema.partial().extend({
-  id: z.string().cuid(),
-});
-
-export type SignupSchemaType = z.infer<typeof signupFormSchema>;
-export type EditSignupSchemaType = z.infer<typeof editSignupSchema>;

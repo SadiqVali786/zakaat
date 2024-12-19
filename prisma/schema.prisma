@@ -11,63 +11,25 @@ model User {
   id       String   @id @default(cuid()) @map("_id")
   role     ROLE     @default(DONOR)
   fullname String
-  phoneNum String
+  phoneNum String   @unique
   selfie   String
   location Location
-  email    String
+  email    String   @unique
 
-  donor    Donor?
-  acceptor Acceptor?
-  verifier Verifier?
+  // donor specific
+  tweets      Tweet[]
+  bookmarks   Application[] @relation("DonorBookmarks")
+  donated     Application[] @relation("DonorDonated")
+  connections Connection[]
+
+  // acceptor specific
+  writtenApplicationId Application? @relation("Acceptor")
+
+  // verifier specific
+  verifiedApplications Application[] @relation("Verifier")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([phoneNum])
-  @@unique([email])
-}
-
-type Location {
-  type        String  @default("Point") // Must be "Point" for geospatial queries
-  coordinates Float[] // @db.FloatArray    // [longitude, latitude]
-}
-
-model Donor {
-  userId      String        @map("_id")
-  tweets      Tweet[]
-  bookmarks   Application[] @relation("bookmarked")
-  donations   Application[] @relation("donated")
-  connections Connection[]
-
-  User User @relation(fields: [userId], references: [id])
-
-  @@id([userId])
-}
-
-model Connection {
-  connectionUserId String @map("_id")
-
-  Connection Donor @relation(fields: [connectionUserId], references: [userId])
-
-  @@id([connectionUserId])
-}
-
-model Acceptor {
-  userId      String       @map("_id")
-  application Application?
-
-  User User @relation(fields: [userId], references: [id])
-
-  @@id([userId])
-}
-
-model Verifier {
-  userId       String        @map("_id")
-  applications Application[]
-
-  User User @relation(fields: [userId], references: [id])
-
-  @@id([userId])
 }
 
 model Application {
@@ -82,10 +44,10 @@ model Application {
   verifierUserId   String?
   donatedUserId    String?
 
-  DonatedBy  Donor?    @relation("donated", fields: [donatedUserId], references: [userId])
-  VerifiedBy Verifier? @relation(fields: [verifierUserId], references: [userId])
-  Author     Acceptor  @relation(fields: [authorId], references: [userId])
-  Donor      Donor?    @relation("bookmarked", fields: [bookmarkedUserId], references: [userId])
+  Acceptor       User  @relation("Acceptor", fields: [authorId], references: [id])
+  Verifier       User? @relation("Verifier", fields: [verifierUserId], references: [id])
+  DonorBookmarks User? @relation("DonorBookmarks", fields: [bookmarkedUserId], references: [id])
+  DonorDonated   User? @relation("DonorDonated", fields: [donatedUserId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -96,10 +58,20 @@ model Tweet {
   text     String
   authorId String
 
-  Donor Donor? @relation(fields: [authorId], references: [userId])
+  Donor User @relation(fields: [authorId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Connection {
+  connectionId String @id @map("_id")
+  Connection   User   @relation(fields: [connectionId], references: [id])
+}
+
+type Location {
+  type        String  @default("Point") // Must be "Point" for geospatial queries
+  coordinates Float[] // [longitude, latitude]
 }
 
 enum STATUS {
@@ -189,81 +161,4 @@ enum ROLE {
 // model Post {
 //   id     String @id @default(uuid())
 //   author User?
-// }
-
-// ########################################################
-// ########################################################
-// ###################### POSTGRESQL ######################
-// ########################################################
-// ########################################################
-
-// model User {
-//   id        String @id @default(cuid()) @map("_id")
-//   role      ROLE
-//   selfie    String
-//   phoneNum  String @unique
-//   latitude  Float
-//   longitude Float
-
-//   // DONOR Specific
-//   tweets    Tweet[]
-//   bookmarks Application[] @relation("Bookmarks")
-//   donations Application[] @relation("Donations")
-//   followers User[]        @relation("Followers")
-//   following User[]        @relation("Followers")
-
-//   // ACCEPTOR Specific
-//   applications Application[] @relation("ZakaatApplications")
-
-//   // VERIFIER Specific
-//   verifiedApplications Application[] @relation("ApplicationVerification")
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
-// model Application {
-//   id                   String  @id @default(cuid()) @map("_id")
-//   authorId             String
-//   amount               Int
-//   reason               String
-//   status               STATUS
-//   hide                 Boolean @default(false)
-//   rating               Int
-//   bookmarkedByDonorId  String?
-//   donatedByDonorId     String?
-//   verifiedByVerifierId String?
-
-//   bookmarkedBy User? @relation("Bookmarks", fields: [bookmarkedByDonorId], references: [id])
-//   donatedBy    User? @relation("Donations", fields: [donatedByDonorId], references: [id])
-//   verifiedBy   User? @relation("ApplicationVerification", fields: [verifiedByVerifierId], references: [id])
-//   author       User  @relation("ZakaatApplications", fields: [authorId], references: [id])
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
-// model Tweet {
-//   id            String @id @default(cuid()) @map("_id")
-//   text          String
-//   tweetAuthorId String
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   TweetedBy User @relation(fields: [tweetAuthorId], references: [id], onDelete: Cascade)
-// }
-
-// enum STATUS {
-//   CREATED
-//   DONATED
-//   VERIFIED
-//   BOOKMARKED
-// }
-
-// enum ROLE {
-//   ADMIN
-//   DONOR
-//   ACCEPTOR
-//   VERIFIER
 // }

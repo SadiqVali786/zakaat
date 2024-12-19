@@ -3,10 +3,8 @@ import { DM_Sans } from "next/font/google";
 import { twMerge } from "tailwind-merge";
 
 import "@/app/globals.css";
-import { ThemeProvider } from "@/providers/theme-provider";
-import { Provider } from "@radix-ui/react-toast";
-import { SessionProvider } from "next-auth/react";
 import AuthProvider from "@/providers/auth-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 
 const dm_sans = DM_Sans({ subsets: ["latin"] });
@@ -27,7 +25,7 @@ export default function RootLayout({
       <body
         className={twMerge(
           dm_sans.className,
-          "antialiased flex justify-center items-center text-blue-50 max-w-[1280px] min-h-screen mx-auto xs:px-4 overflow-x-hidden"
+          "antialiased flex flex-col text-blue-50 max-w-[1280px] min-h-screen mx-auto xs:px-4 overflow-x-hidden"
         )}
       >
         <AuthProvider>

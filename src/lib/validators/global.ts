@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-export const userIdSchema = z.object({
-  id: z.string(),
+export const idSchema = z.object({
+  id: z.string(), //.trim().cuid("Id must be a valid CUID."),
 });
-
-export type UserIdSchemaType = z.infer<typeof userIdSchema>;

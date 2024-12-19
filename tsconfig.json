@@ -28,7 +28,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/lib/fluid-responsiveness/fluidity.js",
-    "src/layouts"
+    "src/layouts",
+    "prisma/seed.js",
+    "prisma/seed.js"
   ],
   "exclude": ["node_modules"]
 }

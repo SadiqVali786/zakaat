@@ -3,9 +3,9 @@ import { DM_Sans } from "next/font/google";
 import { twMerge } from "tailwind-merge";
 
 import "@/app/globals.css";
+import AuthProvider from "@/providers/auth-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
-import HeaderSection from "@/components/LandingPage/Header";
-import FooterSection from "@/components/LandingPage/Footer";
+import { Toaster } from "@/components/ui/toaster";
 
 const dm_sans = DM_Sans({ subsets: ["latin"] });
 
@@ -28,16 +28,17 @@ export default function RootLayout({
           "antialiased flex flex-col text-blue-50 max-w-[1280px] min-h-screen mx-auto xs:px-4 overflow-x-hidden"
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <HeaderSection />
-          {children}
-          <FooterSection />
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

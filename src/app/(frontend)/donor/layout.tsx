@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
-import { twMerge } from "tailwind-merge";
 
 import "@/app/globals.css";
-import { ThemeProvider } from "@/providers/theme-provider";
 import RightSidebar from "@/components/dashboard/RightSidebar";
 import MobileNavbar from "@/components/MobileNavbar";
 import DonorLeftSidebar from "@/components/dashboard/LeftSidebar";
-
-const dm_sans = DM_Sans({ subsets: ["latin"] });
+import AuthProvider from "@/providers/auth-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Zakaat",
@@ -23,25 +21,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={twMerge(
-          dm_sans.className,
-          "antialiased flex text-blue-50 max-w-[1280px] min-h-screen mx-auto xs:px-4 overflow-x-hidden"
-        )}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <DonorLeftSidebar />
-          <div className="grow">
-            {children}
-            <MobileNavbar />
-          </div>
-          <RightSidebar />
-        </ThemeProvider>
+      <body className="antialiased flex text-blue-50 max-w-[1280px] min-h-screen mx-auto xs:px-4 overflow-x-hidden">
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <DonorLeftSidebar />
+            <div className="grow">
+              {children}
+              <MobileNavbar />
+            </div>
+            <RightSidebar />
+            <Toaster />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

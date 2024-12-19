@@ -1,4 +1,5 @@
 const APP_PATHS = {
+  BASE_URL: "http://localhost:3000",
   HOME: "/",
   SIGNIN: "/auth/signin",
   SIGNUP: "/auth/signup",

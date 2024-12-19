@@ -7,5 +7,3 @@ export const createTweetSchema = z.object({
     .min(1, "not a single character is in the tweet")
     .max(280, "tweet should be <= 280 characters"),
 });
-
-export type CreateTweetSchemaType = z.infer<typeof createTweetSchema>;
