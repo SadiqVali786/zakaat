@@ -17,10 +17,11 @@ model User {
   email    String   @unique
 
   // donor specific
-  tweets      Tweet[]
-  bookmarks   Application[] @relation("DonorBookmarks")
-  donated     Application[] @relation("DonorDonated")
-  connections Connection[]
+  tweets    Tweet[]
+  bookmarks Application[] @relation("DonorBookmarks")
+  donated   Application[] @relation("DonorDonated")
+  followers Connection[]  @relation("followers")
+  following Connection[]  @relation("following")
 
   // acceptor specific
   writtenApplicationId Application? @relation("Acceptor")
@@ -32,10 +33,22 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+model Connection {
+  id   String @id @default(cuid()) @map("_id")
+  from String
+  to   String
+
+  follower  User @relation("followers", fields: [to], references: [id])
+  following User @relation("following", fields: [from], references: [id])
+
+  @@unique([from, to])
+  @@index([from])
+}
+
 model Application {
   id               String  @id @default(cuid()) @map("_id")
   authorId         String  @unique
-  amount           String
+  amount           Int
   reason           String
   status           STATUS
   hide             Boolean @default(false)
@@ -62,11 +75,6 @@ model Tweet {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model Connection {
-  connectionId String @id @map("_id")
-  Connection   User   @relation(fields: [connectionId], references: [id])
 }
 
 type Location {

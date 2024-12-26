@@ -2,7 +2,6 @@ const APP_PATHS = {
   BASE_URL: "http://localhost:3000",
   HOME: "/",
   SIGNIN: "/auth/signin",
-  SIGNUP: "/auth/signup",
   ABOUT: "#about",
   DOWNLOAD: "/download",
   CONTACT_US: "mailto:rebirth4vali@gmail.com",
@@ -18,6 +17,7 @@ const APP_PATHS = {
 
   SEARCH_APPLICANT: "/verifier/search-applicant",
   APPLY: "/verifier/apply",
+  EDIT_APPLICATION: "/verifier/edit",
   VERIFIER_PROFILE: "/verifier/my-profile",
 };
 

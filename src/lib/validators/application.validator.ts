@@ -1,8 +1,7 @@
 import { z } from "zod";
 
 export const applicationSchema = z.object({
-  id: z.string().cuid().optional(),
-  authorId: z.string().trim().cuid("authorId must be a valid CUID.").optional(),
+  fullname: z.string().trim().optional(),
   phoneNum: z
     .string()
     .trim()

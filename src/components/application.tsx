@@ -20,8 +20,8 @@ const Application = ({
 }: {
   text: string;
   fullName: string;
-  money: string;
-  rank: string;
+  money: number;
+  rank: number;
   id: string;
 }) => {
   const [showOptions, setShowOptions] = useState(false);
@@ -37,7 +37,7 @@ const Application = ({
   );
 
   return (
-    <div className="xs:border-x xs:border-t border-b-[1px] border-neutral-11 xs:rounded-[15px] flex flex-col gap-y-[10px] px-5 w-full">
+    <div className="xs:border-x xs:border-t border-b-[1px] border-neutral-11 xs:rounded-[15px] flex flex-col gap-y-[10px] px-5 w-full min-h-[200vh]">
       <div className="flex gap-4 pt-5 xs:flex-row flex-col items-center">
         <Image
           src={Reciever1}

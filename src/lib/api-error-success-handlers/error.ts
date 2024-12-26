@@ -9,6 +9,7 @@ export type ErrorResponseType = {
   code: number;
   status: false;
   error?: any;
+  additional?: any;
 };
 
 class ErrorHandler extends Error {

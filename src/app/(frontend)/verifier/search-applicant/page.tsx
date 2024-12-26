@@ -20,15 +20,28 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useActionState, useEffect } from "react";
+import { searchApplicationByPhoneNum } from "@/actions/application.actions";
+import { useRouter } from "next/navigation";
+import APP_PATHS from "@/config/path.config";
+import { useApplicationStoreSelector } from "@/store/application-store";
 
 const formSchema = z.object({
-  upiPhoneNum: z
+  phoneNum: z
     .string()
     .trim()
     .regex(/^\d{10}$/, "Phone number must be exactly 10 digits."),
 });
 
 const Page = () => {
+  const navigate = useRouter();
+  const setFullname = useApplicationStoreSelector.use.setFullname();
+  const setAmount = useApplicationStoreSelector.use.setAmount();
+  const setHide = useApplicationStoreSelector.use.setHide();
+  const setPhoneNum = useApplicationStoreSelector.use.setPhoneNum();
+  const setRating = useApplicationStoreSelector.use.setRating();
+  const setReason = useApplicationStoreSelector.use.setReason();
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,11 +50,28 @@ const Page = () => {
     // },
   });
 
+  const [actionState, action, isPending] = useActionState(
+    searchApplicationByPhoneNum,
+    null
+  );
+
+  useEffect(() => {
+    if (actionState?.status) {
+      setFullname(actionState?.additional.fullname);
+      setAmount(actionState?.additional.details!.amount);
+      setHide(actionState?.additional.details!.hide);
+      setPhoneNum(actionState?.additional.phoneNum);
+      setRating(actionState?.additional.details!.rating);
+      setReason(actionState?.additional.details!.reason);
+      navigate.push(
+        `${APP_PATHS.EDIT_APPLICATION}/${actionState?.additional.phoneNum}`
+      );
+    }
+  }, [actionState]);
+
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await action({ phoneNum: values.phoneNum });
   }
 
   return (
@@ -83,13 +113,11 @@ const Page = () => {
         </button>
       </div> */}
       {/* step3 */}
-      {/* case1 */}
-      {/* case2 */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="upiPhoneNum"
+            name="phoneNum"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>
@@ -111,7 +139,6 @@ const Page = () => {
           </Button>
         </form>
       </Form>
-      {/* step4 */}
     </div>
   );
 };

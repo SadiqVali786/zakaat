@@ -9,6 +9,8 @@ declare module "next-auth" {
     selfie: string;
     phoneNum: string;
     email: string;
+    longitude: number;
+    latitude: number;
   }
   interface Session {
     user: {
@@ -17,6 +19,8 @@ declare module "next-auth" {
       fullname: string;
       selfie: string;
       phoneNum: string;
+      longitude: number;
+      latitude: number;
       email?: string;
     };
   }
@@ -31,5 +35,7 @@ declare module "next-auth/jwt" {
     selfie: string;
     location: Location;
     phoneNum: string;
+    longitude: number;
+    latitude: number;
   }
 }

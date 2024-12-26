@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { auth } from "@/auth";
+import { APPLICATIONS_PER_PAGE } from "@/config/app.config";
 import prisma from "@/db";
 import {
   ErrorHandler,
@@ -26,8 +27,7 @@ export const createApplicationAction = async (
       );
     // #########################################################
     const applicant = await prisma.user.findUnique({
-      // where: { phoneNum: payload.phoneNum, role: ROLE.ACCEPTOR },
-      where: { phoneNum: payload.phoneNum },
+      where: { phoneNum: payload.phoneNum, role: ROLE.ACCEPTOR },
     });
     if (!applicant)
       return new ErrorHandler("applicant is not registered", "NOT_FOUND");
@@ -37,7 +37,7 @@ export const createApplicationAction = async (
         authorId: applicant.id,
         status: STATUS.VERIFIED,
         verifierUserId: session.user.id,
-        amount: String(payload.amount),
+        amount: payload.amount,
         rating: payload.rating,
         reason: payload.reason,
         hide: payload.hide,
@@ -49,7 +49,6 @@ export const createApplicationAction = async (
     ).serialize();
     // #########################################################
   } catch (error) {
-    console.error(error);
     return standardizedApiError(error);
   }
 };
@@ -60,6 +59,7 @@ export const editApplicationAction = async (
 ) => {
   try {
     payload = applicationSchema.parse(payload);
+    console.log("ENTERED SADIQ VALI");
     const session = await auth();
     if (!session || !session.user || session.user.role !== ROLE.VERIFIER)
       throw new ErrorHandler(
@@ -68,28 +68,26 @@ export const editApplicationAction = async (
       );
     // #########################################################
     const applicant = await prisma.user.findUnique({
-      // where: { id: payload.id, role: ROLE.ACCEPTOR },
-      where: { id: payload.id },
+      where: { phoneNum: payload.phoneNum, role: ROLE.ACCEPTOR },
     });
     if (!applicant)
       return new ErrorHandler("applicant is not registered", "NOT_FOUND");
 
-    await prisma.application.update({
-      where: { id: payload.id },
+    const resukt = await prisma.application.update({
+      where: { authorId: applicant.id },
       data: {
-        authorId: payload.authorId,
         status: STATUS.VERIFIED,
-        verifierUserId: session.user.id,
-        amount: String(payload.amount),
+        verifierUserId: session?.user.id,
+        amount: payload.amount,
         rating: payload.rating,
         reason: payload.reason,
         hide: payload.hide,
       },
     });
-    return new SuccessResponse("zakaat application created", 201).serialize();
+    console.log({ resukt });
+    return new SuccessResponse("zakaat application edited", 201).serialize();
     // #########################################################
   } catch (error) {
-    console.error(error);
     return standardizedApiError(error);
   }
 };
@@ -111,7 +109,6 @@ export const deleteAplicationAction = async (
     return new SuccessResponse("zakaat application deleted", 200).serialize();
     // #########################################################
   } catch (error) {
-    console.error(error);
     return standardizedApiError(error);
   }
 };
@@ -137,13 +134,13 @@ export const donateApplicationAction = async (
         bookmarkedUserId: null,
       },
     });
-    const user = await prisma.user.update({
-      where: { id: session.user.id },
-      data: {
-        bookmarks: { disconnect: { id: payload.id } },
-        donated: { connect: { id: payload.id } },
-      },
-    });
+    // const user = await prisma.user.update({
+    //   where: { id: session.user.id },
+    //   data: {
+    //     bookmarks: { disconnect: { id: payload.id } },
+    //     donated: { connect: { id: payload.id } },
+    //   },
+    // });
     return new SuccessResponse(
       "application status changed to donated",
       200
@@ -171,10 +168,10 @@ export const bookmarkApplicationAction = async (
       where: { id: payload.id },
       data: { status: STATUS.BOOKMARKED, bookmarkedUserId: session?.user.id },
     });
-    const user = await prisma.user.update({
-      where: { id: session?.user.id },
-      data: { bookmarks: { connect: { id: payload.id } } },
-    });
+    // const user = await prisma.user.update({
+    //   where: { id: session?.user.id },
+    //   data: { bookmarks: { connect: { id: payload.id } } },
+    // });
     return new SuccessResponse(
       "application status changed to bookmarked",
       200
@@ -202,13 +199,183 @@ export const discardApplicationAction = async (
       where: { id: payload.id },
       data: { status: STATUS.VERIFIED, bookmarkedUserId: null },
     });
-    const user = await prisma.user.update({
-      where: { id: session.user.id },
-      data: { bookmarks: { disconnect: { id: payload.id } } },
-    });
+    // const user = await prisma.user.update({
+    //   where: { id: session.user.id },
+    //   data: { bookmarks: { disconnect: { id: payload.id } } },
+    // });
     return new SuccessResponse(
       "application status is changed to VERIFIED from BOOKMARKED",
       200
+    ).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
+};
+
+type Distance = {
+  distance: number;
+};
+
+type PaginatedOutput<T> = {
+  cursor: {
+    firstBatch: T[];
+    id: number;
+    ns: string;
+  };
+  ok: number;
+  hasMore: boolean;
+};
+
+type Application = {
+  id: string;
+  fullname: string;
+  phoneNum: string;
+  selfie: string;
+  distance: number;
+  details: {
+    hide: boolean;
+    amount: number;
+    reason: string;
+    rating: number;
+  };
+};
+
+export const fetchInfiniteApplicationsFeed = async (
+  previousState: any,
+  payload: Distance
+) => {
+  try {
+    // payload = idSchema.parse(payload);
+    // console.log(payload);
+    const session = await auth();
+    if (!session || !session.user || session.user.role !== ROLE.DONOR)
+      throw new ErrorHandler(
+        "You must be authenticated as DONOR to access this resource",
+        "UNAUTHORIZED"
+      );
+    // #########################################################
+    const applications = (await prisma.$runCommandRaw({
+      aggregate: "User",
+      pipeline: [
+        {
+          $geoNear: {
+            near: {
+              type: "Point",
+              coordinates: [session.user.longitude, session.user.latitude],
+            },
+            distanceField: "distance",
+            spherical: true,
+            key: "location",
+          },
+        },
+        {
+          $match: {
+            role: "ACCEPTOR",
+          },
+        },
+        {
+          $lookup: {
+            from: "Application",
+            localField: "_id",
+            foreignField: "authorId",
+            as: "details",
+          },
+        },
+        {
+          $addFields: {
+            details: {
+              $arrayElemAt: ["$details", 0],
+            },
+          },
+        },
+        {
+          $match: {
+            "details.status": "VERIFIED",
+          },
+        },
+        {
+          $project: {
+            fullname: 1,
+            phoneNum: 1,
+            selfie: 1,
+            distance: 1,
+            "details.hide": 1,
+            "details.amount": 1,
+            "details.reason": 1,
+            "details.rating": 1,
+          },
+        },
+        ...(payload.distance
+          ? [
+              {
+                $match: {
+                  distance: { $gt: payload.distance + 1 },
+                },
+              },
+            ]
+          : []),
+      ],
+      cursor: { batchSize: APPLICATIONS_PER_PAGE + 1 },
+    })) as PaginatedOutput<Application>;
+    if (applications.cursor.firstBatch.length === APPLICATIONS_PER_PAGE + 1) {
+      applications.hasMore = true;
+      applications.cursor.firstBatch.pop();
+    } else applications.hasMore = false;
+    return new SuccessResponse(
+      "applications feed fetched",
+      200,
+      applications
+    ).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
+};
+
+type PhoneNum = {
+  phoneNum: string;
+};
+
+export const searchApplicationByPhoneNum = async (
+  previousState: any,
+  payload: PhoneNum
+) => {
+  // payload = idSchema.parse(payload);
+  const session = await auth();
+  // if (!session || !session.user || session.user.role !== ROLE.VERIFIER)
+  //   throw new ErrorHandler(
+  //     "You must be authenticated as VERIFIER to access this resource",
+  //     "UNAUTHORIZED"
+  //   );
+  // #########################################################
+  try {
+    const foundApplication = await prisma.user.findUnique({
+      where: { phoneNum: payload.phoneNum },
+      select: {
+        fullname: true,
+        phoneNum: true,
+        selfie: true,
+        writtenApplicationId: {
+          select: { hide: true, amount: true, reason: true, rating: true },
+        },
+      },
+    });
+    if (!foundApplication) {
+      throw new ErrorHandler(
+        "No Zakaat application with this UPI Phone Number",
+        "BAD_REQUEST"
+      );
+    }
+    const { writtenApplicationId, ...rest } = foundApplication;
+    const application = {
+      ...rest,
+      details: writtenApplicationId,
+    };
+    return new SuccessResponse(
+      "application found",
+      200,
+      application
     ).serialize();
     // #########################################################
   } catch (error) {

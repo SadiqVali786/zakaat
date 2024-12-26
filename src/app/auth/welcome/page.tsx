@@ -18,7 +18,7 @@ import { signupFormSchema } from "@/lib/validators/auth.validator";
 import { signupAction } from "@/actions/signup.actions";
 import { redirect, useRouter } from "next/navigation";
 import APP_PATHS from "@/config/path.config";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 const SignupPage = () => {
   const [step, setStep] = useState(1);
@@ -57,6 +57,7 @@ const SignupPage = () => {
   async function onSubmit(payload: z.infer<typeof signupFormSchema>) {
     console.log(payload);
     await action(payload);
+    await signOut();
     navigator.push(APP_PATHS.SIGNIN);
   }
 

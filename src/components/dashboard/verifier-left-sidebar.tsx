@@ -10,7 +10,7 @@ import { verifierSidebar } from "@/lib/constant/app.constant";
 
 export default function VerifierLeftSidebar() {
   return (
-    <aside className="hidden xs:flex flex-col justify-between py-8 sticky top-0 max-h-screen max-w-[286px] min-w-[52px] grow">
+    <aside className="hidden xs:flex flex-col justify-between py-8 sticky top-0 max-h-screen lg:max-w-[286px] max-w-[52px] grow">
       <div className="flex flex-col gap-y-[60px] xs:items-start items-center">
         <LogoWithText />
         <div className="w-full">

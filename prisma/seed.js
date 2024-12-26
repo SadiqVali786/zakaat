@@ -8,20 +8,20 @@ async function main() {
       {
         id: "acceptor1",
         role: "ACCEPTOR",
-        fullname: "John Doe",
-        phoneNum: "+11234567890",
-        selfie: "https://example.com/johndoe_selfie.jpg",
-        location: { type: "Point", coordinates: [-122.4194, 37.7749] },
-        email: "johndoe@example.com",
+        fullname: "Rajesh",
+        phoneNum: "9916180493",
+        selfie: "https://example.com/rajesh_selfie.jpg",
+        location: { type: "Point", coordinates: [77.5946, 12.9716] },
+        email: "rajesh@example.com",
       },
       {
         id: "acceptor2",
         role: "ACCEPTOR",
-        fullname: "Jane Smith",
-        phoneNum: "+11234567891",
-        selfie: "https://example.com/janesmith_selfie.jpg",
-        location: { type: "Point", coordinates: [-118.2437, 34.0522] },
-        email: "janesmith@example.com",
+        fullname: "Venkatesh",
+        phoneNum: "7382582834",
+        selfie: "https://example.com/venkatesh_selfie.jpg",
+        location: { type: "Point", coordinates: [78.4772, 17.4065] },
+        email: "venkatesh@example.com",
       },
     ],
   });
@@ -31,35 +31,35 @@ async function main() {
       {
         id: "donor1",
         role: "DONOR",
-        fullname: "Alice Cooper",
-        phoneNum: "+11234567892",
-        selfie: "https://example.com/alicecooper_selfie.jpg",
-        location: { type: "Point", coordinates: [-74.006, 40.7128] },
-        email: "alicecooper@example.com",
+        fullname: "Mahaboob Basha",
+        phoneNum: "7799584615",
+        selfie: "https://example.com/mababoob_basha_selfie.jpg",
+        location: { type: "Point", coordinates: [75.3412, 33.2778] },
+        email: "mahaboob_basha@example.com",
       },
       {
         id: "donor2",
         role: "DONOR",
-        fullname: "Bob Marley",
-        phoneNum: "+11234567893",
-        selfie: "https://example.com/bobmarley_selfie.jpg",
-        location: { type: "Point", coordinates: [-95.3698, 29.7604] },
-        email: "bobmarley@example.com",
+        fullname: "Shameem",
+        phoneNum: "9440365688",
+        selfie: "https://example.com/shameem_selfie.jpg",
+        location: { type: "Point", coordinates: [77.6017, 14.6824] },
+        email: "shameem@example.com",
       },
     ],
   });
 
-  const verifier = await prisma.user.create({
-    data: {
-      id: "verifier1",
-      role: "VERIFIER",
-      fullname: "Emily Clark",
-      phoneNum: "+11234567894",
-      selfie: "https://example.com/emilyclark_selfie.jpg",
-      location: { type: "Point", coordinates: [-77.0369, 38.9072] },
-      email: "emilyclark@example.com",
-    },
-  });
+  // const verifier = await prisma.user.create({
+  //   data: {
+  //     id: "verifier1",
+  //     role: "VERIFIER",
+  //     fullname: "Emily Clark",
+  //     phoneNum: "+11234567894",
+  //     selfie: "https://example.com/emilyclark_selfie.jpg",
+  //     location: { type: "Point", coordinates: [-77.0369, 38.9072] },
+  //     email: "emilyclark@example.com",
+  //   },
+  // });
 
   // Create Tweets
   for (const donor of ["donor1", "donor2"]) {
@@ -80,29 +80,49 @@ async function main() {
       {
         id: "application1",
         authorId: "acceptor1",
-        amount: "5000",
+        amount: 5000,
         reason: "Medical expenses",
-        status: "CREATED",
+        status: "VERIFIED",
+        hide: false,
         bookmarkedUserId: "donor1", // Unique ID
+        verifierUserId: "",
         rating: 5,
       },
       {
         id: "application2",
         authorId: "acceptor2",
-        amount: "3000",
+        amount: 3000,
         reason: "Educational support",
-        status: "CREATED",
+        status: "VERIFIED",
+        hide: false,
         bookmarkedUserId: "donor2", // Unique ID
+        verifierUserId: "",
         rating: 4,
       },
     ],
   });
 
   // Create Connection
-  await prisma.connection.create({
-    data: {
-      connectionId: "donor2",
-    },
+  await prisma.$transaction(async (txn) => {
+    const connection = await prisma.connection.create({
+      data: {
+        id: "connection1",
+        from: "cm4y66yax0002t5flhwe2teb3",
+        to: "donor1",
+      },
+    });
+    // await txn.user.update({
+    //   where: { id: "cm4xoq0a60000t56z8ax3e2kz" },
+    //   data: {
+    //     following: { connect: { id: connection.id } },
+    //   },
+    // });
+    // await txn.user.update({
+    //   where: { id: "donor1" },
+    //   data: {
+    //     followers: { connect: { id: connection.id } },
+    //   },
+    // });
   });
 
   console.log("Seed data created successfully!");

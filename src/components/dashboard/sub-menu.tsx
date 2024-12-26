@@ -17,11 +17,11 @@ export default function SubMenu({ title, icon, path }: PropTypes) {
   return (
     <div
       className={cn(
-        "flex items-center gap-x-2 py-[10px] lg:px-[10px]",
+        "flex items-center gap-x-2 py-[10px] lg:px-[10px] w-full",
         pathname.includes(path) ? "bg-neutral-11" : ""
       )}
     >
-      <Image src={icon} alt="tweets icon" />
+      <Image src={icon} alt="tweets icon" className="mx-auto lg:mx-0" />
       <div className="lg:flex items-center grow justify-between hidden gap-x-2">
         <span>{title}</span>
         <Image src={More} alt="more" />

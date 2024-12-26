@@ -7,13 +7,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import HamburgerMenu from "@/../public/Icons/hamburgerMenu.png";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
 const navigation = [
   {
     title: "Home",
@@ -80,17 +73,7 @@ export default function HeaderSection() {
             Sign Up
           </span>
         </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Image src={HamburgerMenu} alt={"hamberger menu"} />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-brand-dark border-neutral-11 text-neutral-7 flex flex-col">
-            <DropdownMenuItem className="text-lg">Home</DropdownMenuItem>
-            <DropdownMenuItem className="text-lg">About</DropdownMenuItem>
-            <DropdownMenuItem className="text-lg">Download</DropdownMenuItem>
-            <DropdownMenuItem className="text-lg">Contact Us</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Image src={HamburgerMenu} alt={"hamberger menu"} />
       </div>
     </div>
   );

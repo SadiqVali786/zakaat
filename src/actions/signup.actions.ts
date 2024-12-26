@@ -49,9 +49,6 @@ export const signupAction = async (
         },
       },
     });
-    if (payload.role === ROLE.DONOR) {
-      await prisma.donor.create({ data: { userId: newUser.id } });
-    }
     return new SuccessResponse("", 201).serialize();
     // #########################################################
   } catch (error) {

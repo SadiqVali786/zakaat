@@ -20,6 +20,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.fullname = foundUser.fullname;
           token.phoneNum = foundUser.phoneNum;
           token.selfie = foundUser.selfie;
+          token.longitude = foundUser.location.coordinates[0];
+          token.latitude = foundUser.location.coordinates[1];
         }
       }
       return token;
@@ -32,9 +34,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           session.user.fullname = token.fullname as string;
           session.user.phoneNum = token.phoneNum as string;
           session.user.selfie = token.selfie as string;
+          session.user.longitude = token.longitude as number;
+          session.user.latitude = token.latitude as number;
           delete session.user.name;
           delete session.user.image;
-          delete session.user.email;
         }
       }
       return session;

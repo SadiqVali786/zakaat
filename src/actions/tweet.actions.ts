@@ -27,10 +27,10 @@ export const createTweetAction = async (
     const tweet = await prisma.tweet.create({
       data: { ...payload, authorId: session.user.id },
     });
-    const user = await prisma.user.update({
-      where: { id: session.user.id },
-      data: { tweets: { connect: { id: tweet.id } } },
-    });
+    // const user = await prisma.user.update({
+    //   where: { id: session.user.id },
+    //   data: { tweets: { connect: { id: tweet.id } } },
+    // });
     return new SuccessResponse("new tweet created", 201).serialize();
     // #########################################################
   } catch (error) {

@@ -24,20 +24,21 @@ export const followDonor = async (
       );
     // #########################################################
     await prisma.$transaction(async (txn) => {
-      await txn.user.update({
-        where: { id: payload.id },
-        data: {
-          connections: { connect: { connectionId: session.user.id } },
-        },
+      const connection = await prisma.connection.create({
+        data: { from: session.user.id, to: payload.id },
       });
-      await prisma.$transaction(async (txn) => {
-        await txn.user.update({
-          where: { id: session.user.id },
-          data: {
-            connections: { connect: { connectionId: payload.id } },
-          },
-        });
-      });
+      // await txn.user.update({
+      //   where: { id: session.user.id },
+      //   data: {
+      //     following: { connect: { id: connection.id } },
+      //   },
+      // });
+      // await txn.user.update({
+      //   where: { id: payload.id },
+      //   data: {
+      //     followers: { connect: { id: connection.id } },
+      //   },
+      // });
     });
     return new SuccessResponse(
       "new DONOR to DONOR conection established",
@@ -64,20 +65,21 @@ export const unfollowDonor = async (
       );
     // #########################################################
     await prisma.$transaction(async (txn) => {
-      await txn.user.update({
-        where: { id: payload.id },
-        data: {
-          connections: { disconnect: { connectionId: session.user.id } },
-        },
+      const connection = await txn.connection.findUnique({
+        where: { from_to: { from: session.user.id, to: payload.id } },
       });
-      await prisma.$transaction(async (txn) => {
-        await txn.user.update({
-          where: { id: session.user.id },
-          data: {
-            connections: { disconnect: { connectionId: payload.id } },
-          },
-        });
-      });
+      // await txn.user.update({
+      //   where: { id: payload.id },
+      //   data: {
+      //     connections: { disconnect: { connectionId: session.user.id } },
+      //   },
+      // });
+      // await txn.user.update({
+      //   where: { id: session.user.id },
+      //   data: {
+      //     connections: { disconnect: { connectionId: payload.id } },
+      //   },
+      // });
     });
     return new SuccessResponse(
       "DONOR to DONOR conection removed",
