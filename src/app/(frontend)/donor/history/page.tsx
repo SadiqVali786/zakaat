@@ -1,8 +1,8 @@
 import { auth } from "@/auth";
 import Application from "@/components/application";
 import ApplicationsFeedBar from "@/components/applications-feed-bar";
-import BookmarksScrollFeed from "@/components/bookmarks-scroll-feed";
-import { APPLICATIONS_PER_PAGE, TWEETS_PER_PAGE } from "@/config/app.config";
+import HistoryScrollFeed from "@/components/history-scroll-feed";
+import { APPLICATIONS_PER_PAGE } from "@/config/app.config";
 import APP_PATHS from "@/config/path.config";
 import prisma from "@/db";
 import { ROLE, STATUS } from "@prisma/client";
@@ -19,8 +19,8 @@ const BookmarkedApplications = async () => {
     redirect(APP_PATHS.SIGNIN);
 
   const applications = await prisma.application.findMany({
-    where: { status: STATUS.BOOKMARKED, bookmarkedUserId: session?.user.id },
-    take: TWEETS_PER_PAGE,
+    where: { status: STATUS.DONATED, donatedUserId: session?.user.id },
+    take: APPLICATIONS_PER_PAGE,
     orderBy: { createdAt: "desc" },
   });
 
@@ -54,7 +54,7 @@ const BookmarkedApplications = async () => {
           />
         ))}
         {applications.length === APPLICATIONS_PER_PAGE && (
-          <BookmarksScrollFeed id={applications[applications.length - 1].id} />
+          <HistoryScrollFeed id={applications[applications.length - 1].id} />
         )}
       </div>
     </main>

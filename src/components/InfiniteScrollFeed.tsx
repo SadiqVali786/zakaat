@@ -77,7 +77,7 @@ export default function InfiniteScrollFeed({ dis = 0 }: { dis?: number }) {
   }, [hasMore]);
 
   return (
-    <div key={"123456"}>
+    <div>
       {applications.map((application) => (
         <Application
           key={application.id}

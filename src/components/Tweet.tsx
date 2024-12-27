@@ -14,7 +14,7 @@ export default function Tweet({
   dp: StaticImageData;
 }) {
   return (
-    <div className="xs:p-8 p-4 flex gap-2 items-start border-b-[1px] border-neutral-11">
+    <div className="xs:p-8 p-4 flex gap-2 items-start border-b-[1px] border-neutral-11 min-h-screen">
       <Image src={dp} alt="DP" className="w-[50px] h-[50px]" />
       <div>
         <div className="flex gap-x-1 text-neutral-7">

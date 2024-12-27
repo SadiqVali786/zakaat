@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { auth } from "@/auth";
-import { APPLICATIONS_PER_PAGE } from "@/config/app.config";
+import { APPLICATIONS_PER_PAGE, TWEETS_PER_PAGE } from "@/config/app.config";
 import prisma from "@/db";
 import {
   ErrorHandler,
@@ -376,6 +376,68 @@ export const searchApplicationByPhoneNum = async (
       "application found",
       200,
       application
+    ).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
+};
+
+export const fetchBookmarkedApplicationsFeedAction = async (
+  previousState: any,
+  payload: z.infer<typeof idSchema>
+) => {
+  payload = idSchema.parse(payload);
+  const session = await auth();
+  if (!session || !session.user || session.user.role !== ROLE.DONOR)
+    throw new ErrorHandler(
+      "You must be authenticated as DONOR to access this resource",
+      "UNAUTHORIZED"
+    );
+  // #########################################################
+  try {
+    const applications = await prisma.application.findMany({
+      where: { status: STATUS.BOOKMARKED, bookmarkedUserId: session?.user.id },
+      take: TWEETS_PER_PAGE,
+      skip: 1,
+      cursor: { id: payload.id },
+      orderBy: { createdAt: "desc" },
+    });
+    return new SuccessResponse(
+      "bookmarked applications feed fetched",
+      200,
+      applications
+    ).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
+};
+
+export const fetchHistoryApplicationsFeedAction = async (
+  previousState: any,
+  payload: z.infer<typeof idSchema>
+) => {
+  payload = idSchema.parse(payload);
+  const session = await auth();
+  if (!session || !session.user || session.user.role !== ROLE.DONOR)
+    throw new ErrorHandler(
+      "You must be authenticated as DONOR to access this resource",
+      "UNAUTHORIZED"
+    );
+  // #########################################################
+  try {
+    const applications = await prisma.application.findMany({
+      where: { status: STATUS.DONATED, donatedUserId: session?.user.id },
+      take: APPLICATIONS_PER_PAGE,
+      skip: 1,
+      cursor: { id: payload.id },
+      orderBy: { createdAt: "desc" },
+    });
+    return new SuccessResponse(
+      "bookmarked applications feed fetched",
+      200,
+      applications
     ).serialize();
     // #########################################################
   } catch (error) {
