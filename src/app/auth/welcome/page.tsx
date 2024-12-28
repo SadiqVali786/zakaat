@@ -19,21 +19,11 @@ import { signupAction } from "@/actions/signup.actions";
 import { redirect, useRouter } from "next/navigation";
 import APP_PATHS from "@/config/path.config";
 import { signOut, useSession } from "next-auth/react";
+import useAuthorization from "@/hooks/useAuthorization";
 
 const SignupPage = () => {
   const [step, setStep] = useState(1);
-  const navigator = useRouter();
-  const session = useSession();
-
-  useEffect(() => {
-    if (session.status === "authenticated" && session.data.user.phoneNum) {
-      if (session.data.user.role === ROLE.VERIFIER)
-        redirect(APP_PATHS.SEARCH_APPLICANT);
-      if (session.data.user.role === ROLE.DONOR)
-        redirect(APP_PATHS.ZAKAAT_APPLICATIONS);
-    }
-    if (session.status === "unauthenticated") redirect(APP_PATHS.SIGNIN);
-  }, [session]);
+  const { session, router } = useAuthorization();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof signupFormSchema>>({
@@ -55,10 +45,10 @@ const SignupPage = () => {
 
   // 2. Define a submit handler.
   async function onSubmit(payload: z.infer<typeof signupFormSchema>) {
-    console.log(payload);
+    // console.log(payload);
     await action(payload);
     await signOut();
-    navigator.push(APP_PATHS.SIGNIN);
+    router.push(APP_PATHS.SIGNIN);
   }
 
   return (

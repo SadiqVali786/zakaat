@@ -13,6 +13,7 @@ import { signupFormSchema } from "@/lib/validators/auth.validator";
 import { ROLE } from "@prisma/client";
 import { z } from "zod";
 
+// TODO: Change name of the action to welcome action
 export const signupAction = async (
   previousState: any,
   payload: z.infer<typeof signupFormSchema>
@@ -52,7 +53,6 @@ export const signupAction = async (
     return new SuccessResponse("", 201).serialize();
     // #########################################################
   } catch (error) {
-    console.error(error);
     return standardizedApiError(error);
   }
 };

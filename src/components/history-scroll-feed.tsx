@@ -7,16 +7,10 @@ import { useSession } from "next-auth/react";
 import { ROLE } from "@prisma/client";
 import APP_PATHS from "@/config/path.config";
 import { redirect } from "next/navigation";
+import useAuthorization from "@/hooks/useAuthorization";
 
 const HistoryScrollFeed = ({ id }: { id: string }) => {
-  const session = useSession();
-
-  if (
-    session.status === "unauthenticated" ||
-    (session.status === "authenticated" &&
-      (!session.data?.user || session.data?.user.role !== ROLE.DONOR))
-  )
-    redirect(APP_PATHS.SIGNIN); // TODO: toaster text
+  const { session, router } = useAuthorization();
 
   const [cursor, setCursor] = useState<string>(id);
   const [applications, setApplications] = useState<Application[]>([]);
@@ -51,6 +45,8 @@ const HistoryScrollFeed = ({ id }: { id: string }) => {
   }, [actionState, isPending]);
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const handleScroll = async () => {
       if (
         window.innerHeight + document.documentElement.scrollTop >=
@@ -58,13 +54,22 @@ const HistoryScrollFeed = ({ id }: { id: string }) => {
         isPending === false &&
         cursor
       ) {
-        startTransition(() => {
-          action({ id: cursor });
-        });
+        if (timeoutId) return;
+
+        timeoutId = setTimeout(() => {
+          timeoutId = null;
+          startTransition(() => {
+            action({ id: cursor });
+          });
+        }, 1000);
       }
     };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [cursor]);
 
   return (

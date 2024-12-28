@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
+
 import { auth } from "@/auth";
 import { APPLICATIONS_PER_PAGE, TWEETS_PER_PAGE } from "@/config/app.config";
 import prisma from "@/db";
@@ -13,241 +14,13 @@ import { idSchema } from "@/lib/validators/global";
 import { ROLE, STATUS } from "@prisma/client";
 import { z } from "zod";
 
-export const createApplicationAction = async (
-  previousState: any,
-  payload: z.infer<typeof applicationSchema>
-) => {
-  try {
-    payload = applicationSchema.parse(payload);
-    const session = await auth();
-    if (!session || !session.user || session.user.role !== ROLE.VERIFIER)
-      throw new ErrorHandler(
-        "You must be authenticated as VERIFIER to access this resource",
-        "UNAUTHORIZED"
-      );
-    // #########################################################
-    const applicant = await prisma.user.findUnique({
-      where: { phoneNum: payload.phoneNum, role: ROLE.ACCEPTOR },
-    });
-    if (!applicant)
-      return new ErrorHandler("applicant is not registered", "NOT_FOUND");
-
-    await prisma.application.create({
-      data: {
-        authorId: applicant.id,
-        status: STATUS.VERIFIED,
-        verifierUserId: session.user.id,
-        amount: payload.amount,
-        rating: payload.rating,
-        reason: payload.reason,
-        hide: payload.hide,
-      },
-    });
-    return new SuccessResponse(
-      "new zakaat application created successfully",
-      201
-    ).serialize();
-    // #########################################################
-  } catch (error) {
-    return standardizedApiError(error);
-  }
-};
-
-export const editApplicationAction = async (
-  previousState: any,
-  payload: z.infer<typeof applicationSchema>
-) => {
-  try {
-    payload = applicationSchema.parse(payload);
-    console.log("ENTERED SADIQ VALI");
-    const session = await auth();
-    if (!session || !session.user || session.user.role !== ROLE.VERIFIER)
-      throw new ErrorHandler(
-        "You must be authenticated as VERIFIER to access this resource",
-        "UNAUTHORIZED"
-      );
-    // #########################################################
-    const applicant = await prisma.user.findUnique({
-      where: { phoneNum: payload.phoneNum, role: ROLE.ACCEPTOR },
-    });
-    if (!applicant)
-      return new ErrorHandler("applicant is not registered", "NOT_FOUND");
-
-    const resukt = await prisma.application.update({
-      where: { authorId: applicant.id },
-      data: {
-        status: STATUS.VERIFIED,
-        verifierUserId: session?.user.id,
-        amount: payload.amount,
-        rating: payload.rating,
-        reason: payload.reason,
-        hide: payload.hide,
-      },
-    });
-    console.log({ resukt });
-    return new SuccessResponse("zakaat application edited", 201).serialize();
-    // #########################################################
-  } catch (error) {
-    return standardizedApiError(error);
-  }
-};
-
-export const deleteAplicationAction = async (
-  previousState: any,
-  payload: z.infer<typeof idSchema>
-) => {
-  try {
-    payload = idSchema.parse(payload);
-    const session = await auth();
-    if (!session || !session.user || session.user.role !== ROLE.VERIFIER)
-      throw new ErrorHandler(
-        "You must be authenticated as VERIFIER to access this resource",
-        "UNAUTHORIZED"
-      );
-    // #########################################################
-    await prisma.application.delete({ where: { id: payload.id } });
-    return new SuccessResponse("zakaat application deleted", 200).serialize();
-    // #########################################################
-  } catch (error) {
-    return standardizedApiError(error);
-  }
-};
-
-export const donateApplicationAction = async (
-  previousState: any,
-  payload: z.infer<typeof idSchema>
-) => {
-  try {
-    payload = idSchema.parse(payload);
-    const session = await auth();
-    if (!session || !session.user || session.user.role !== ROLE.DONOR)
-      throw new ErrorHandler(
-        "You must be authenticated as DONOR to access this resource",
-        "UNAUTHORIZED"
-      );
-    // #########################################################
-    const application = await prisma.application.update({
-      where: { id: payload.id },
-      data: {
-        status: STATUS.DONATED,
-        donatedUserId: session?.user.id,
-        bookmarkedUserId: null,
-      },
-    });
-    // const user = await prisma.user.update({
-    //   where: { id: session.user.id },
-    //   data: {
-    //     bookmarks: { disconnect: { id: payload.id } },
-    //     donated: { connect: { id: payload.id } },
-    //   },
-    // });
-    return new SuccessResponse(
-      "application status changed to donated",
-      200
-    ).serialize();
-    // #########################################################
-  } catch (error) {
-    return standardizedApiError(error);
-  }
-};
-
-export const bookmarkApplicationAction = async (
-  previousState: any,
-  payload: z.infer<typeof idSchema>
-) => {
-  try {
-    payload = idSchema.parse(payload);
-    const session = await auth();
-    if (!session || !session.user || session.user.role !== ROLE.DONOR)
-      throw new ErrorHandler(
-        "You must be authenticated as DONOR to access this resource",
-        "UNAUTHORIZED"
-      );
-    // #########################################################
-    const application = await prisma.application.update({
-      where: { id: payload.id },
-      data: { status: STATUS.BOOKMARKED, bookmarkedUserId: session?.user.id },
-    });
-    // const user = await prisma.user.update({
-    //   where: { id: session?.user.id },
-    //   data: { bookmarks: { connect: { id: payload.id } } },
-    // });
-    return new SuccessResponse(
-      "application status changed to bookmarked",
-      200
-    ).serialize();
-    // #########################################################
-  } catch (error) {
-    return standardizedApiError(error);
-  }
-};
-
-export const discardApplicationAction = async (
-  previousState: any,
-  payload: z.infer<typeof idSchema>
-) => {
-  try {
-    payload = idSchema.parse(payload);
-    const session = await auth();
-    if (!session || !session.user || session.user.role !== ROLE.DONOR)
-      throw new ErrorHandler(
-        "You must be authenticated as DONOR to access this resource",
-        "UNAUTHORIZED"
-      );
-    // #########################################################
-    await prisma.application.update({
-      where: { id: payload.id },
-      data: { status: STATUS.VERIFIED, bookmarkedUserId: null },
-    });
-    // const user = await prisma.user.update({
-    //   where: { id: session.user.id },
-    //   data: { bookmarks: { disconnect: { id: payload.id } } },
-    // });
-    return new SuccessResponse(
-      "application status is changed to VERIFIED from BOOKMARKED",
-      200
-    ).serialize();
-    // #########################################################
-  } catch (error) {
-    return standardizedApiError(error);
-  }
-};
-
-type Distance = {
-  distance: number;
-};
-
-type PaginatedOutput<T> = {
-  cursor: {
-    firstBatch: T[];
-    id: number;
-    ns: string;
-  };
-  ok: number;
-  hasMore: boolean;
-};
-
-type Application = {
-  id: string;
-  fullname: string;
-  phoneNum: string;
-  selfie: string;
-  distance: number;
-  details: {
-    hide: boolean;
-    amount: number;
-    reason: string;
-    rating: number;
-  };
-};
-
+// PUBLIC
 export const fetchInfiniteApplicationsFeed = async (
   previousState: any,
   payload: Distance
 ) => {
   try {
     // payload = idSchema.parse(payload);
-    // console.log(payload);
     const session = await auth();
     if (!session || !session.user || session.user.role !== ROLE.DONOR)
       throw new ErrorHandler(
@@ -333,10 +106,106 @@ export const fetchInfiniteApplicationsFeed = async (
   }
 };
 
-type PhoneNum = {
-  phoneNum: string;
+// VERIFIER
+export const createApplicationAction = async (
+  previousState: any,
+  payload: z.infer<typeof applicationSchema>
+) => {
+  try {
+    payload = applicationSchema.parse(payload);
+    const session = await auth();
+    if (!session || !session.user || session.user.role !== ROLE.VERIFIER)
+      throw new ErrorHandler(
+        "You must be authenticated as VERIFIER to access this resource",
+        "UNAUTHORIZED"
+      );
+    // #########################################################
+    const applicant = await prisma.user.findUnique({
+      where: { phoneNum: payload.phoneNum, role: ROLE.ACCEPTOR },
+    });
+    if (!applicant)
+      return new ErrorHandler("applicant is not registered", "NOT_FOUND");
+
+    await prisma.application.create({
+      data: {
+        authorId: applicant.id,
+        status: STATUS.VERIFIED,
+        verifierUserId: session.user.id,
+        amount: payload.amount,
+        rating: payload.rating,
+        reason: payload.reason,
+        hide: payload.hide,
+      },
+    });
+    return new SuccessResponse(
+      "new zakaat application created successfully",
+      201
+    ).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
 };
 
+export const editApplicationAction = async (
+  previousState: any,
+  payload: z.infer<typeof applicationSchema>
+) => {
+  try {
+    payload = applicationSchema.parse(payload);
+    const session = await auth();
+    if (!session || !session.user || session.user.role !== ROLE.VERIFIER)
+      throw new ErrorHandler(
+        "You must be authenticated as VERIFIER to access this resource",
+        "UNAUTHORIZED"
+      );
+    // #########################################################
+    const applicant = await prisma.user.findUnique({
+      where: { phoneNum: payload.phoneNum, role: ROLE.ACCEPTOR },
+    });
+    if (!applicant)
+      return new ErrorHandler("applicant is not registered", "NOT_FOUND");
+
+    const resukt = await prisma.application.update({
+      where: { authorId: applicant.id },
+      data: {
+        status: STATUS.VERIFIED,
+        verifierUserId: session?.user.id,
+        amount: payload.amount,
+        rating: payload.rating,
+        reason: payload.reason,
+        hide: payload.hide,
+      },
+    });
+    return new SuccessResponse("zakaat application edited", 201).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
+};
+
+export const deleteAplicationAction = async (
+  previousState: any,
+  payload: z.infer<typeof idSchema>
+) => {
+  try {
+    payload = idSchema.parse(payload);
+    const session = await auth();
+    if (!session || !session.user || session.user.role !== ROLE.VERIFIER)
+      throw new ErrorHandler(
+        "You must be authenticated as VERIFIER to access this resource",
+        "UNAUTHORIZED"
+      );
+    // #########################################################
+    await prisma.application.delete({ where: { id: payload.id } });
+    return new SuccessResponse("zakaat application deleted", 200).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
+};
+
+// TODO: prepare PhoeNum Schema
 export const searchApplicationByPhoneNum = async (
   previousState: any,
   payload: PhoneNum
@@ -381,6 +250,124 @@ export const searchApplicationByPhoneNum = async (
   } catch (error) {
     return standardizedApiError(error);
   }
+};
+
+// DONOR
+export const donateApplicationAction = async (
+  previousState: any,
+  payload: z.infer<typeof idSchema>
+) => {
+  try {
+    payload = idSchema.parse(payload);
+    const session = await auth();
+    if (!session || !session.user || session.user.role !== ROLE.DONOR)
+      throw new ErrorHandler(
+        "You must be authenticated as DONOR to access this resource",
+        "UNAUTHORIZED"
+      );
+    // #########################################################
+    const application = await prisma.application.update({
+      where: { id: payload.id },
+      data: {
+        status: STATUS.DONATED,
+        donatedUserId: session?.user.id,
+        bookmarkedUserId: null,
+      },
+    });
+    return new SuccessResponse(
+      "application status changed to DONATED",
+      200
+    ).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
+};
+
+export const bookmarkApplicationAction = async (
+  previousState: any,
+  payload: z.infer<typeof idSchema>
+) => {
+  try {
+    payload = idSchema.parse(payload);
+    const session = await auth();
+    if (!session || !session.user || session.user.role !== ROLE.DONOR)
+      throw new ErrorHandler(
+        "You must be authenticated as DONOR to access this resource",
+        "UNAUTHORIZED"
+      );
+    // #########################################################
+    const application = await prisma.application.update({
+      where: { id: payload.id },
+      data: { status: STATUS.BOOKMARKED, bookmarkedUserId: session?.user.id },
+    });
+    return new SuccessResponse(
+      "application status changed to BOOKMARKED",
+      200
+    ).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
+};
+
+export const discardApplicationAction = async (
+  previousState: any,
+  payload: z.infer<typeof idSchema>
+) => {
+  try {
+    payload = idSchema.parse(payload);
+    const session = await auth();
+    if (!session || !session.user || session.user.role !== ROLE.DONOR)
+      throw new ErrorHandler(
+        "You must be authenticated as DONOR to access this resource",
+        "UNAUTHORIZED"
+      );
+    // #########################################################
+    await prisma.application.update({
+      where: { id: payload.id },
+      data: { status: STATUS.VERIFIED, bookmarkedUserId: null },
+    });
+    return new SuccessResponse(
+      "application status is changed to VERIFIED from BOOKMARKED",
+      200
+    ).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
+};
+
+type Distance = {
+  distance: number;
+};
+
+type PaginatedOutput<T> = {
+  cursor: {
+    firstBatch: T[];
+    id: number;
+    ns: string;
+  };
+  ok: number;
+  hasMore: boolean;
+};
+
+type Application = {
+  id: string;
+  fullname: string;
+  phoneNum: string;
+  selfie: string;
+  distance: number;
+  details: {
+    hide: boolean;
+    amount: number;
+    reason: string;
+    rating: number;
+  };
+};
+
+type PhoneNum = {
+  phoneNum: string;
 };
 
 export const fetchBookmarkedApplicationsFeedAction = async (

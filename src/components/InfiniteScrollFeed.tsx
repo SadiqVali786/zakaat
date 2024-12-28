@@ -4,6 +4,7 @@ import { fetchInfiniteApplicationsFeed } from "@/actions/application.actions";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import Application from "./application";
 import { useSession } from "next-auth/react";
+import useAuthorization from "@/hooks/useAuthorization";
 
 type PaginatedOutput<T> = {
   cursor: {
@@ -30,7 +31,7 @@ type Application = {
 };
 
 export default function InfiniteScrollFeed({ dis = 0 }: { dis?: number }) {
-  const session = useSession();
+  const { session, router } = useAuthorization();
 
   const [applications, setApplications] = useState<Application[] | []>([]);
   const [distance, setDistance] = useState<number>(dis);
@@ -45,20 +46,22 @@ export default function InfiniteScrollFeed({ dis = 0 }: { dis?: number }) {
     if (actionState && isPending == false) {
       const additional = actionState.additional as PaginatedOutput<Application>;
       const length = additional.cursor.firstBatch.length;
-      console.log(additional);
-      console.log(additional.cursor);
+      // console.log(additional);
+      // console.log(additional.cursor);
       setHasMore(additional.hasMore);
       setDistance(additional.cursor.firstBatch[length - 1].distance);
       setApplications((prev) => [...prev, ...additional.cursor.firstBatch]);
     }
   }, [actionState, isPending]);
 
-  useEffect(() => {
-    console.log({ applications });
-    console.log({ distance });
-  }, [applications]);
+  // useEffect(() => {
+  //   console.log({ applications });
+  //   console.log({ distance });
+  // }, [applications]);
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const handleScroll = async () => {
       if (
         window.innerHeight + document.documentElement.scrollTop >=
@@ -66,14 +69,22 @@ export default function InfiniteScrollFeed({ dis = 0 }: { dis?: number }) {
         isPending === false &&
         hasMore
       ) {
-        // console.log({ distance });
-        startTransition(() => {
-          action({ distance });
-        });
+        if (timeoutId) return;
+
+        timeoutId = setTimeout(() => {
+          timeoutId = null;
+          startTransition(() => {
+            action({ distance });
+          });
+        }, 1000);
       }
     };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [hasMore]);
 
   return (

@@ -17,18 +17,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { useActionState, useEffect } from "react";
-import { redirect, usePathname } from "next/navigation";
+import { useActionState } from "react";
+import { usePathname } from "next/navigation";
 import { ICONS } from "@/lib/icons";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
-import APP_PATHS from "@/config/path.config";
-import { ROLE } from "@prisma/client";
 import { createApplicationAction } from "@/actions/application.actions";
 import { applicationSchema } from "@/lib/validators/application.validator";
+import useAuthorization from "@/hooks/useAuthorization";
 
 const FormWithShadcn = () => {
-  const session = useSession();
+  const { session, router } = useAuthorization();
   const [actionState, action, isPending] = useActionState(
     createApplicationAction,
     null
@@ -42,19 +40,8 @@ const FormWithShadcn = () => {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof applicationSchema>) {
-    console.log(values);
     await action(values);
-    console.log({ actionState });
   }
-
-  useEffect(() => {
-    if (session.status === "authenticated") {
-      if (!session || !session.data?.user) redirect(APP_PATHS.SIGNIN);
-      if (!session.data.user.phoneNum) redirect(APP_PATHS.WELCOME);
-      if (session.data.user.role !== ROLE.VERIFIER) redirect(APP_PATHS.HOME);
-    }
-    if (session.status === "unauthenticated") redirect(APP_PATHS.SIGNIN);
-  }, [session, form]);
 
   const pathname = usePathname();
   const length = pathname.split("/").length;

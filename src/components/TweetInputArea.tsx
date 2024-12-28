@@ -1,25 +1,60 @@
-import Image from "next/image";
+"use client";
+
 import React from "react";
-import Button from "./common/Button";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { $getRoot } from "lexical";
+import Image from "next/image";
 import DP from "@/../public/dashboard/dp.png";
 import Post from "@/../public/Icons/dashboard/send.png";
 
-export default function TweetInputArea() {
+const initialConfig = {
+  namespace: "TweetEditor",
+  theme: {},
+  onError: (error: Error) => console.error(error),
+  nodes: [],
+};
+
+function SaveTweetButton() {
+  const [editor] = useLexicalComposerContext();
+
+  const saveTweet = () => {
+    editor.update(() => {
+      const rawContent = $getRoot().getTextContent();
+      console.log("Saved Tweet:", rawContent); // Replace with API call to save
+    });
+  };
+
   return (
-    <div className="xs:p-8 p-4 xs:min-h-52 min-h-44 flex flex-col border-b-[1px] border-neutral-11 relative">
-      <div className="flex gap-x-2 items-start">
-        <Image src={DP} alt="DP" className="w-[50px] h-[50px]" />
-        <textarea
-          placeholder="What is happening?"
-          rows={4}
-          className="placeholder:text-neutral-7 text-blue-50 bg-brand-dark flex-grow resize-none border-transparent focus:border-transparent focus:ring-0 outline-none overflow-hidden"
-        />
+    <button
+      className="rounded-[8px] p-[1px] bg-gradient-to-r from-[#4135F3] to-[#BE52F2] absolute xs:right-6 xs:bottom-6 right-3 bottom-3"
+      onClick={saveTweet}
+    >
+      <div className="bg-brand-dark flex gap-x-2 px-4 py-2 rounded-[8px]">
+        <Image alt="post" src={Post} />
+        <p>Post</p>
       </div>
-      <Button
-        text="Post"
-        icon={Post}
-        className="absolute xs:right-6 xs:bottom-6 right-3 bottom-3"
-      />
-    </div>
+    </button>
+  );
+}
+
+export default function TweetInput() {
+  return (
+    <LexicalComposer initialConfig={initialConfig}>
+      <div className="xs:p-8 p-4 xs:min-h-52 min-h-44 flex flex-col border-b-[1px] border-neutral-11 relative">
+        <div className="flex gap-x-2 items-start h-full w-full">
+          <Image src={DP} alt="DP" className="w-[50px] h-[50px]" />
+          <RichTextPlugin
+            contentEditable={
+              <ContentEditable className="placeholder:text-neutral-7 text-blue-50 bg-brand-dark flex-grow resize-none border-transparent focus:border-transparent focus:ring-0 outline-none overflow-hidden" />
+            }
+            ErrorBoundary={() => <div>Error loading editor</div>}
+          />
+        </div>
+        <SaveTweetButton />
+      </div>
+    </LexicalComposer>
   );
 }

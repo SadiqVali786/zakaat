@@ -15,34 +15,7 @@ import { createTweetSchema } from "@/lib/validators/tweet.validators";
 import { ROLE } from "@prisma/client";
 import { z } from "zod";
 
-export const createTweetAction = async (
-  previousState: any,
-  payload: z.infer<typeof createTweetSchema>
-) => {
-  try {
-    payload = createTweetSchema.parse(payload);
-    const session = await auth();
-    if (!session || !session.user || session.user.role !== ROLE.DONOR)
-      throw new ErrorHandler(
-        "You must be authenticated as DONOR to access this resource",
-        "UNAUTHORIZED"
-      );
-    // #########################################################
-    const tweet = await prisma.tweet.create({
-      data: { ...payload, authorId: session.user.id },
-    });
-    // const user = await prisma.user.update({
-    //   where: { id: session.user.id },
-    //   data: { tweets: { connect: { id: tweet.id } } },
-    // });
-    return new SuccessResponse("new tweet created", 201).serialize();
-    // #########################################################
-  } catch (error) {
-    console.error(error);
-    return standardizedApiError(error);
-  }
-};
-
+// PUBLIC
 export const fetchTweetsAction = async (
   previousState: any,
   payload: z.infer<typeof idSchema>
@@ -73,11 +46,31 @@ export const fetchTweetsAction = async (
       cursor: { id: payload.id },
       orderBy: { createdAt: "desc" },
     });
-    // const user = await prisma.user.update({
-    //   where: { id: session.user.id },
-    //   data: { tweets: { connect: { id: tweet.id } } },
-    // });
     return new SuccessResponse("new tweet created", 201, tweets).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
+};
+
+// DONOR
+export const createTweetAction = async (
+  previousState: any,
+  payload: z.infer<typeof createTweetSchema>
+) => {
+  try {
+    payload = createTweetSchema.parse(payload);
+    const session = await auth();
+    if (!session || !session.user || session.user.role !== ROLE.DONOR)
+      throw new ErrorHandler(
+        "You must be authenticated as DONOR to access this resource",
+        "UNAUTHORIZED"
+      );
+    // #########################################################
+    const tweet = await prisma.tweet.create({
+      data: { ...payload, authorId: session.user.id },
+    });
+    return new SuccessResponse("new tweet created", 201).serialize();
     // #########################################################
   } catch (error) {
     return standardizedApiError(error);
@@ -121,10 +114,6 @@ export const fetchFollowingTweetsAction = async (
       cursor: { id: payload.id },
       orderBy: { createdAt: "desc" },
     });
-    // const user = await prisma.user.update({
-    //   where: { id: session.user.id },
-    //   data: { tweets: { connect: { id: tweet.id } } },
-    // });
     return new SuccessResponse(
       "new tweets fetched",
       201,
@@ -132,7 +121,6 @@ export const fetchFollowingTweetsAction = async (
     ).serialize();
     // #########################################################
   } catch (error) {
-    console.error(error);
     return standardizedApiError(error);
   }
 };

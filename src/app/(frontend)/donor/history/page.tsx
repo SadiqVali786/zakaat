@@ -10,13 +10,9 @@ import { redirect } from "next/navigation";
 
 const BookmarkedApplications = async () => {
   const session = await auth();
-  if (
-    !session ||
-    !session.user ||
-    !session.user.phoneNum ||
-    session.user.role !== ROLE.DONOR // TODO: toaster text
-  )
-    redirect(APP_PATHS.SIGNIN);
+  if (!session || !session.user) redirect(APP_PATHS.SIGNIN);
+  if (!session.user.phoneNum) redirect(APP_PATHS.WELCOME);
+  if (session.user.role !== ROLE.DONOR) redirect(APP_PATHS.SIGNIN); // TODO: toaster text
 
   const applications = await prisma.application.findMany({
     where: { status: STATUS.DONATED, donatedUserId: session?.user.id },

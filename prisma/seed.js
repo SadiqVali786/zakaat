@@ -103,28 +103,13 @@ async function main() {
   });
 
   // Create Connection
-  await prisma.$transaction(async (txn) => {
-    const connection = await prisma.connection.create({
-      data: {
-        id: "connection1",
-        from: "cm4y66yax0002t5flhwe2teb3",
-        to: "donor1",
-      },
-    });
-    // await txn.user.update({
-    //   where: { id: "cm4xoq0a60000t56z8ax3e2kz" },
-    //   data: {
-    //     following: { connect: { id: connection.id } },
-    //   },
-    // });
-    // await txn.user.update({
-    //   where: { id: "donor1" },
-    //   data: {
-    //     followers: { connect: { id: connection.id } },
-    //   },
-    // });
+  const connection = await prisma.connection.create({
+    data: {
+      id: "connection1",
+      from: "cm4y66yax0002t5flhwe2teb3",
+      to: "donor1",
+    },
   });
-
   console.log("Seed data created successfully!");
 }
 

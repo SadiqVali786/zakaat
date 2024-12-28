@@ -72,7 +72,7 @@ const Application = ({
                 className="hover:bg-neutral-10 py-1 pt-2 px-4 cursor-pointer"
                 onClick={async () => {
                   await action({ id });
-                  console.log(actionState);
+                  // console.log(actionState);
                 }}
               >
                 Bookmark
@@ -81,7 +81,7 @@ const Application = ({
                 className="hover:bg-neutral-10 py-1 pt-2 px-4 cursor-pointer"
                 onClick={async () => {
                   await action1({ id });
-                  console.log(actionState1);
+                  // console.log(actionState1);
                 }}
               >
                 Discard

@@ -16,14 +16,9 @@ import { redirect } from "next/navigation";
 
 const GenuineApplications = async () => {
   const session = await auth();
-
-  if (
-    !session ||
-    !session.user ||
-    !session.user.phoneNum ||
-    session.user.role !== ROLE.DONOR // TODO: toaster text
-  )
-    redirect(APP_PATHS.SIGNIN);
+  if (!session || !session.user) redirect(APP_PATHS.SIGNIN);
+  if (!session.user.phoneNum) redirect(APP_PATHS.WELCOME);
+  if (session.user.role !== ROLE.DONOR) redirect(APP_PATHS.SIGNIN); // TODO: toaster text
 
   type PaginatedOutput<T> = {
     cursor: {

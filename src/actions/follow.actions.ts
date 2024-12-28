@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use server";
+
 import { auth } from "@/auth";
 import prisma from "@/db";
 import {
@@ -10,6 +12,7 @@ import { idSchema } from "@/lib/validators/global";
 import { ROLE } from "@prisma/client";
 import { z } from "zod";
 
+// DONOR
 export const followDonor = async (
   previousState: any,
   payload: z.infer<typeof idSchema>
@@ -23,30 +26,29 @@ export const followDonor = async (
         "UNAUTHORIZED"
       );
     // #########################################################
-    await prisma.$transaction(async (txn) => {
-      const connection = await prisma.connection.create({
-        data: { from: session.user.id, to: payload.id },
-      });
-      // await txn.user.update({
-      //   where: { id: session.user.id },
-      //   data: {
-      //     following: { connect: { id: connection.id } },
-      //   },
-      // });
-      // await txn.user.update({
-      //   where: { id: payload.id },
-      //   data: {
-      //     followers: { connect: { id: connection.id } },
-      //   },
-      // });
+    const connection = await prisma.connection.create({
+      data: { from: session.user.id, to: payload.id },
     });
+    // await prisma.$transaction(async (txn) => {
+    // await txn.user.update({
+    //   where: { id: session.user.id },
+    //   data: {
+    //     following: { connect: { id: connection.id } },
+    //   },
+    // });
+    // await txn.user.update({
+    //   where: { id: payload.id },
+    //   data: {
+    //     followers: { connect: { id: connection.id } },
+    //   },
+    // });
+    // });
     return new SuccessResponse(
-      "new DONOR to DONOR conection established",
+      "DONOR to DONOR conection established",
       201
     ).serialize();
     // #########################################################
   } catch (error) {
-    console.error(error);
     return standardizedApiError(error);
   }
 };
@@ -64,22 +66,8 @@ export const unfollowDonor = async (
         "UNAUTHORIZED"
       );
     // #########################################################
-    await prisma.$transaction(async (txn) => {
-      const connection = await txn.connection.findUnique({
-        where: { from_to: { from: session.user.id, to: payload.id } },
-      });
-      // await txn.user.update({
-      //   where: { id: payload.id },
-      //   data: {
-      //     connections: { disconnect: { connectionId: session.user.id } },
-      //   },
-      // });
-      // await txn.user.update({
-      //   where: { id: session.user.id },
-      //   data: {
-      //     connections: { disconnect: { connectionId: payload.id } },
-      //   },
-      // });
+    const connection = await prisma.connection.delete({
+      where: { from_to: { from: session.user.id, to: payload.id } },
     });
     return new SuccessResponse(
       "DONOR to DONOR conection removed",
@@ -87,7 +75,6 @@ export const unfollowDonor = async (
     ).serialize();
     // #########################################################
   } catch (error) {
-    console.error(error);
     return standardizedApiError(error);
   }
 };

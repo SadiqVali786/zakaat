@@ -3,19 +3,10 @@
 import { fetchBookmarkedApplicationsFeedAction } from "@/actions/application.actions";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import Application from "./application";
-import { useSession } from "next-auth/react";
-import APP_PATHS from "@/config/path.config";
-import { redirect } from "next/navigation";
-import { ROLE } from "@prisma/client";
+import useAuthorization from "@/hooks/useAuthorization";
 
 const BookmarksScrollFeed = ({ id }: { id: string }) => {
-  const session = useSession();
-  if (
-    session.status === "unauthenticated" ||
-    (session.status === "authenticated" &&
-      (!session.data?.user || session.data?.user.role !== ROLE.DONOR))
-  )
-    redirect(APP_PATHS.SIGNIN); // TODO: toaster text
+  const { session, router } = useAuthorization();
 
   const [cursor, setCursor] = useState<string>(id);
   const [applications, setApplications] = useState<Application[]>([]);
@@ -43,13 +34,15 @@ const BookmarksScrollFeed = ({ id }: { id: string }) => {
     if (actionState && isPending == false) {
       const additional = actionState.additional as Application[];
       const length = additional.length;
-      console.log(additional);
+      // console.log(additional);
       setCursor(additional[length - 1].id);
       setApplications((prev) => [...prev, ...additional]);
     }
   }, [actionState, isPending]);
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const handleScroll = async () => {
       if (
         window.innerHeight + document.documentElement.scrollTop >=
@@ -57,16 +50,23 @@ const BookmarksScrollFeed = ({ id }: { id: string }) => {
         isPending === false &&
         cursor
       ) {
-        startTransition(() => {
-          action({ id: cursor });
-        });
+        if (timeoutId) return;
+
+        timeoutId = setTimeout(() => {
+          timeoutId = null;
+          startTransition(() => {
+            action({ id: cursor });
+          });
+        }, 1000);
       }
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [cursor]);
 
-  if (!id) return <></>;
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [cursor]);
 
   return (
     <div>

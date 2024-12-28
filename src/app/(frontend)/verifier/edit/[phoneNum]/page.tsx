@@ -60,7 +60,7 @@ const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
 
   useEffect(() => {
     if (actionState) {
-      console.log(actionState);
+      // console.log(actionState);
       if (actionState?.status) {
         navigate.push(APP_PATHS.SEARCH_APPLICANT);
       }
@@ -70,7 +70,7 @@ const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
   async function onSubmit(values: z.infer<typeof applicationSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    // console.log(values);
     const { fullname, ...rest } = values;
     await action(rest);
   }
