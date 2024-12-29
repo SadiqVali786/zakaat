@@ -4,7 +4,7 @@ import { fetchBookmarkedApplicationsFeedAction } from "@/actions/application.act
 import { startTransition, useActionState, useEffect, useState } from "react";
 import Application from "./application";
 import { useSession } from "next-auth/react";
-import { ROLE } from "@prisma/client";
+import { ROLE, STATUS } from "@prisma/client";
 import APP_PATHS from "@/config/path.config";
 import { redirect } from "next/navigation";
 import useAuthorization from "@/hooks/useAuthorization";
@@ -22,20 +22,21 @@ const HistoryScrollFeed = ({ id }: { id: string }) => {
 
   type Application = {
     id: string;
-    fullname: string;
-    phoneNum: string;
-    selfie: string;
-    distance: number;
-    details: {
-      hide: boolean;
-      amount: number;
-      reason: string;
-      rating: number;
-    };
+    status: STATUS;
+    authorId: string;
+    amount: number;
+    reason: string;
+    hide: boolean;
+    rating: number;
+    bookmarkedUserId: string | null;
+    verifierUserId: string | null;
+    donatedUserId: string | null;
+    createdAt: Date;
+    updatedAt: Date;
   };
 
   useEffect(() => {
-    if (actionState && isPending == false) {
+    if (actionState && actionState.additional.length && isPending == false) {
       const additional = actionState.additional as Application[];
       const length = additional.length;
       console.log(additional);
@@ -79,9 +80,9 @@ const HistoryScrollFeed = ({ id }: { id: string }) => {
           key={application.id}
           id={application.id}
           fullName={session.data?.user.fullname as string}
-          money={application.details.amount}
-          rank={application.details.rating}
-          text={application.details.reason}
+          money={application.amount}
+          rank={application.rating}
+          text={application.reason}
         />
       ))}
     </div>

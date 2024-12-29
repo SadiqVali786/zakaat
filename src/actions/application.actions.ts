@@ -73,6 +73,7 @@ export const fetchInfiniteApplicationsFeed = async (
             phoneNum: 1,
             selfie: 1,
             distance: 1,
+            "details._id": 1,
             "details.hide": 1,
             "details.amount": 1,
             "details.reason": 1,
@@ -289,7 +290,9 @@ export const bookmarkApplicationAction = async (
   payload: z.infer<typeof idSchema>
 ) => {
   try {
+    console.log(payload);
     payload = idSchema.parse(payload);
+    console.log(payload);
     const session = await auth();
     if (!session || !session.user || session.user.role !== ROLE.DONOR)
       throw new ErrorHandler(

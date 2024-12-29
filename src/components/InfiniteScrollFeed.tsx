@@ -17,12 +17,13 @@ type PaginatedOutput<T> = {
 };
 
 type Application = {
-  id: string;
+  _id: string;
   fullname: string;
   phoneNum: string;
   selfie: string;
   distance: number;
   details: {
+    _id: string;
     hide: boolean;
     amount: number;
     reason: string;
@@ -43,7 +44,11 @@ export default function InfiniteScrollFeed({ dis = 0 }: { dis?: number }) {
   );
 
   useEffect(() => {
-    if (actionState && isPending == false) {
+    if (
+      actionState &&
+      actionState.additional.cursor.firstBatch.length &&
+      isPending == false
+    ) {
       const additional = actionState.additional as PaginatedOutput<Application>;
       const length = additional.cursor.firstBatch.length;
       // console.log(additional);
@@ -91,8 +96,8 @@ export default function InfiniteScrollFeed({ dis = 0 }: { dis?: number }) {
     <div>
       {applications.map((application) => (
         <Application
-          key={application.id}
-          id={application.id}
+          key={application.details._id}
+          id={application.details._id}
           fullName={session?.data?.user.fullname || ""}
           money={application.details.amount}
           rank={application.details.rating}

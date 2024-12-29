@@ -1,3 +1,4 @@
+import { formatRelativeDate } from "@/lib/utils";
 import Image, { StaticImageData } from "next/image";
 
 export default function Tweet({
@@ -8,7 +9,7 @@ export default function Tweet({
   dp,
 }: {
   fullName: string;
-  time: string;
+  time: Date;
   applicationLink?: string;
   tweetBody: string;
   dp: StaticImageData;
@@ -21,7 +22,7 @@ export default function Tweet({
           <p className="text-blue-50">{fullName}</p>
           <p>@{fullName.toLowerCase().replace(" ", "-")}</p>
           <p>-</p>
-          <p>{time}</p>
+          <p>{formatRelativeDate(time)}</p>
         </div>
         <div className="flex flex-col">
           <p className="text-base">{tweetBody}</p>

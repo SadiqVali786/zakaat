@@ -50,7 +50,7 @@ export default async function Home() {
             key={tweet.id}
             dp={DP}
             fullName={tweet.Donor.fullname}
-            time="2 hr"
+            time={tweet.createdAt}
             applicationLink="https://www.zakaat.com/zakaat-application/bismilla"
             tweetBody={tweet.text}
           />

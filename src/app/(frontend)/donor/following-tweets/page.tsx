@@ -55,7 +55,7 @@ export default async function Home() {
             key={followingTweet.id}
             dp={DP}
             fullName={followingTweet.Donor.fullname}
-            time="2 hr"
+            time={followingTweet.createdAt}
             applicationLink="https://www.zakaat.com/zakaat-application/bismilla"
             tweetBody={followingTweet.text}
           />

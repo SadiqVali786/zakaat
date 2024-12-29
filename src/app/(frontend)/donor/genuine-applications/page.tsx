@@ -30,12 +30,13 @@ const GenuineApplications = async () => {
   };
 
   type Application = {
-    id: string;
+    _id: string;
     fullname: string;
     phoneNum: string;
     selfie: string;
     distance: number;
     details: {
+      _id: string;
       hide: boolean;
       amount: number;
       reason: string;
@@ -44,7 +45,7 @@ const GenuineApplications = async () => {
   };
   const result = await fetchInfiniteApplicationsFeed({}, { distance: 0 });
   const applications = result.additional as PaginatedOutput<Application>;
-  // console.log(applications.cursor.firstBatch[0]);
+  console.log(applications.cursor.firstBatch[0]);
   const length = applications.cursor.firstBatch.length;
 
   return (
@@ -53,8 +54,8 @@ const GenuineApplications = async () => {
       <div className="flex flex-col gap-y-5 xs:px-4 pt-5">
         {applications.cursor.firstBatch.map((application) => (
           <Application
-            key={application.id}
-            id={application.id}
+            key={application.details._id}
+            id={application.details._id}
             fullName={session?.user.fullname}
             money={application.details.amount}
             rank={application.details.rating}

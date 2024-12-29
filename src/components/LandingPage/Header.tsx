@@ -8,6 +8,7 @@ import HamburgerMenu from "@/../public/Icons/hamburgerMenu.png";
 import APP_PATHS from "@/config/path.config";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { signOut, useSession } from "next-auth/react";
 
 const navigation = [
   {
@@ -31,6 +32,8 @@ const navigation = [
 export default function HeaderSection() {
   const pathname = usePathname();
   const [openMenu, setOpenMenu] = useState(false);
+
+  const { data: session, status } = useSession();
 
   return (
     <div
@@ -61,8 +64,12 @@ export default function HeaderSection() {
       </ul>
       <div className="flex gap-4 items-center">
         <Link
-          href={APP_PATHS.SIGNIN}
+          href={status === "unauthenticated" ? APP_PATHS.SIGNIN : "#"}
           className="md:flex hidden items-center gap-2 py-2 px-5 rounded-lg border border-[#211f30] bg-gradient-to-b from-[#030014] to-[#292637] text-xl leading-normal font-dm-sans text-[#8e8c95]"
+          onClick={() => {
+            if (status === "authenticated")
+              signOut({ redirectTo: APP_PATHS.HOME });
+          }}
         >
           <span
             style={{
@@ -73,7 +80,7 @@ export default function HeaderSection() {
             }}
             className="text-xl leading-normal"
           >
-            Login
+            {status === "unauthenticated" ? "Login" : "Logout"}
           </span>
         </Link>
         <Image
@@ -110,8 +117,12 @@ export default function HeaderSection() {
               </Link>
             ))}
             <Link
-              href={APP_PATHS.SIGNIN}
+              href={status === "unauthenticated" ? APP_PATHS.SIGNIN : "#"}
               className="flex items-center gap-2 py-2 px-5 rounded-lg border border-[#211f30] bg-gradient-to-b from-[#030014] to-[#292637] text-xl leading-normal font-dm-sans text-[#8e8c95] mt-8"
+              onClick={() => {
+                if (status === "authenticated")
+                  signOut({ redirectTo: APP_PATHS.HOME });
+              }}
             >
               <span
                 style={{
@@ -122,7 +133,7 @@ export default function HeaderSection() {
                 }}
                 className="text-xl leading-normal"
               >
-                Login
+                {status === "unauthenticated" ? "Login" : "Logout"}
               </span>
             </Link>
           </ul>

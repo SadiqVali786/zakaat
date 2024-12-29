@@ -33,7 +33,7 @@ const FollowingTweetsScrollFeed = ({ id }: { id?: string }) => {
   );
 
   useEffect(() => {
-    if (actionState && isPending == false) {
+    if (actionState && actionState.additional && isPending == false) {
       const additional = actionState.additional as Tweet[];
       const length = additional.length;
       // console.log(additional);
@@ -83,7 +83,7 @@ const FollowingTweetsScrollFeed = ({ id }: { id?: string }) => {
           key={followingTweet.id}
           dp={DP}
           fullName={followingTweet.Donor.fullname}
-          time="2 hr"
+          time={followingTweet.createdAt}
           applicationLink="https://www.zakaat.com/zakaat-application/bismilla"
           tweetBody={followingTweet.text}
         />

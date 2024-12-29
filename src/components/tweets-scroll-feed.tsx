@@ -30,9 +30,9 @@ const TweetsScrollFeed = ({ id }: { id?: string }) => {
   );
 
   useEffect(() => {
-    if (actionState && isPending == false) {
+    if (actionState && actionState.additional && isPending == false) {
       const additional = actionState.additional as Tweet[];
-      console.log(actionState);
+      // console.log(actionState);
       const length = additional.length;
       if (length === TWEETS_PER_PAGE) setCursor(additional[length - 1].id);
       else setCursor(undefined);
@@ -80,7 +80,7 @@ const TweetsScrollFeed = ({ id }: { id?: string }) => {
           key={tweet.id}
           dp={DP}
           fullName={tweet.Donor.fullname}
-          time="2 hr"
+          time={tweet.createdAt}
           applicationLink="https://www.zakaat.com/zakaat-application/bismilla"
           tweetBody={tweet.text}
         />

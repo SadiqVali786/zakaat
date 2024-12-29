@@ -12,6 +12,19 @@ const useAuthorization = () => {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (pathname.includes(APP_PATHS.WELCOME) && session.data?.user.phoneNum) {
+      switch (session.data.user.role) {
+        case ROLE.VERIFIER:
+          router.replace(APP_PATHS.SEARCH_APPLICANT);
+          break;
+        case ROLE.DONOR:
+          router.replace(APP_PATHS.ZAKAAT_APPLICATIONS);
+          break;
+        default:
+          router.replace(APP_PATHS.HOME);
+      }
+    }
+
     if (session.status === "unauthenticated") {
       router.replace(APP_PATHS.SIGNIN);
       return;
@@ -35,17 +48,6 @@ const useAuthorization = () => {
         (pathname.includes("donor") && user.role !== ROLE.DONOR)
       )
         router.replace(APP_PATHS.SIGNIN);
-
-      // switch (user.role) {
-      //   case ROLE.VERIFIER:
-      //     router.replace(APP_PATHS.SEARCH_APPLICANT);
-      //     break;
-      //   case ROLE.DONOR:
-      //     router.replace(APP_PATHS.ZAKAAT_APPLICATIONS);
-      //     break;
-      //   default:
-      //     router.replace(APP_PATHS.HOME);
-      // }
     }
   }, [session, router]);
 

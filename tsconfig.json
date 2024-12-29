@@ -30,7 +30,8 @@
     "src/lib/fluid-responsiveness/fluidity.js",
     "src/layouts",
     "prisma/seed.js",
-    "prisma/seed.js"
+    "prisma/seed.js",
+    "src/lib/utils.js"
   ],
   "exclude": ["node_modules"]
 }
