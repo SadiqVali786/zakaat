@@ -4,6 +4,7 @@ import Image, { StaticImageData } from "next/image";
 import More from "@/../public/Icons/dashboard/more_horizontal_shade.png";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type PropTypes = {
   title: string;
@@ -15,7 +16,8 @@ export default function SubMenu({ title, icon, path }: PropTypes) {
   const pathname = usePathname();
 
   return (
-    <div
+    <Link
+      href={path}
       className={cn(
         "flex items-center gap-x-2 py-[10px] lg:px-[10px] w-full",
         pathname.includes(path) ? "bg-neutral-11" : ""
@@ -26,6 +28,6 @@ export default function SubMenu({ title, icon, path }: PropTypes) {
         <span>{title}</span>
         <Image src={More} alt="more" />
       </div>
-    </div>
+    </Link>
   );
 }

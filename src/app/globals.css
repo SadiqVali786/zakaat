@@ -77,14 +77,3 @@
     width: clamp(233px, 27.96vw, 371px);
   }
 }
-
-/* For screens upto 768px */
-@media (max-width: 768px) {
-  .hero-margin-right {
-    margin-right: clamp(1rem, 4.9vw, 5rem);
-  }
-
-  .hero-left-items-row-gap {
-    row-gap: 25px;
-  }
-}

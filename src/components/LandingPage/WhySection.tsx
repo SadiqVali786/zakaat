@@ -53,10 +53,10 @@ export default function WhySection() {
             >
               We simplify Zakaat donations by serving as a free intermediary for
               both donors and applicants. Donors can rely on us to connect them
-              with friends or family in need, if they’re on the platform.
-              Applicants can choose to remain anonymous, though sharing details
-              may increase donor trust and improve their chances of receiving
-              Zakaat.
+              with their friends or relatives in need, if they’re on the
+              platform. Applicants can choose to remain anonymous, though
+              sharing details may increase donor trust and improve their chances
+              of receiving Zakaat.
             </p>
           </div>
           <div className="flex gap-4 justify-center">

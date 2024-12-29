@@ -26,7 +26,7 @@ import { applicationSchema } from "@/lib/validators/application.validator";
 import useAuthorization from "@/hooks/useAuthorization";
 
 const FormWithShadcn = () => {
-  const { session, router } = useAuthorization();
+  // const { session, router } = useAuthorization();
   const [actionState, action, isPending] = useActionState(
     createApplicationAction,
     null

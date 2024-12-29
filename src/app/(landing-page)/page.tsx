@@ -9,7 +9,7 @@ import WhySection from "@/components/LandingPage/WhySection";
 
 export default function Home() {
   return (
-    <main className="flex-1">
+    <main className="flex-1 relative">
       <HeaderSection />
       <HeroSection />
       <AboutSection />

@@ -11,22 +11,22 @@ const FAQS = [
   {
     question: "Is this Platform Free for Zakaat Donors & Recipients?",
     answer:
-      "Your privacy is our top priority. We never display your personal details or photos to others on our platform. If you feel uncomfortable accepting Zakaat from specific individuals, such as family or friends, you can opt to exclude them as donors. This way, you have complete control over who contributes to your cause, ensuring that you feel at ease and respected throughout the process.",
+      "Absolutely! Our platform is completely free for both Zakat donors and recipients. We are committed to serving the community by bridging the gap between deserving individuals and compassionate donors, without any fees or hidden charges.",
   },
   {
     question: "How do you filter out the fraudulent Zakaat Applications?",
     answer:
-      "Your privacy is our top priority. We never display your personal details or photos to others on our platform. If you feel uncomfortable accepting Zakaat from specific individuals, such as family or friends, you can opt to exclude them as donors. This way, you have complete control over who contributes to your cause, ensuring that you feel at ease and respected throughout the process.",
+      "Your local Islamic social activists carefully verify each Zakat applicant before uploading them to the platform. This includes home visits to assess their situation, thorough checks of documents like bank transactions, and discreet local inquiries to validate their claims. Only those who pass this rigorous verification process are listed, ensuring your Zakat reaches the most deserving individuals in your community.",
   },
   {
     question: "As a Donor, can i see whom i am giving zakaat money?",
     answer:
-      "Your privacy is our top priority. We never display your personal details or photos to others on our platform. If you feel uncomfortable accepting Zakaat from specific individuals, such as family or friends, you can opt to exclude them as donors. This way, you have complete control over who contributes to your cause, ensuring that you feel at ease and respected throughout the process.",
+      "Yes, in most cases, you can view details of the recipient to better understand their need and situation. However, some applicants may choose to remain anonymous. Even then, we ensure their application is verified and ranked based on need, so you can donate with confidence knowing that your Zakat is reaching someone genuinely deserving.",
   },
   {
     question: "If you are doing all this for free, then how you are surviving?",
     answer:
-      "Your privacy is our top priority. We never display your personal details or photos to others on our platform. If you feel uncomfortable accepting Zakaat from specific individuals, such as family or friends, you can opt to exclude them as donors. This way, you have complete control over who contributes to your cause, ensuring that you feel at ease and respected throughout the process.",
+      "Our platform is sustained through the goodwill of donors and supporters who believe in our mission. We also rely on occasional sponsorships, partnerships, and voluntary contributions from those who wish to support the operational costs of this initiative. Our focus remains entirely on ensuring that Zakat reaches the right hands without any financial burden on the community.",
   },
 ];
 

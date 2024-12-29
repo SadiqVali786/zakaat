@@ -23,8 +23,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import APP_PATHS from "@/config/path.config";
 import { useApplicationStoreSelector } from "@/store/application-store";
+import useAuthorization from "@/hooks/useAuthorization";
 
 const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
+  const { session, router } = useAuthorization();
   // const phoneNum = params.phoneNum;
   const amount = useApplicationStoreSelector.use.amount();
   const fullname = useApplicationStoreSelector.use.fullname();
@@ -33,8 +35,6 @@ const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
   const rating = useApplicationStoreSelector.use.rating();
   const reason = useApplicationStoreSelector.use.reason();
   const reset = useApplicationStoreSelector.use.reset();
-
-  const navigate = useRouter();
 
   const [actionState, action, isPending] = useActionState(
     editApplicationAction,
@@ -49,6 +49,8 @@ const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
       form.setValue("phoneNum", phoneNum);
       form.setValue("rating", rating);
       form.setValue("reason", reason);
+    } else {
+      router.replace(APP_PATHS.SEARCH_APPLICANT);
     }
   }, [amount, fullname, hide, phoneNum, rating, reason]);
 
@@ -62,7 +64,7 @@ const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
     if (actionState) {
       // console.log(actionState);
       if (actionState?.status) {
-        navigate.push(APP_PATHS.SEARCH_APPLICANT);
+        router.push(APP_PATHS.SEARCH_APPLICANT);
       }
     }
   }, [actionState]);
@@ -73,6 +75,7 @@ const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
     // console.log(values);
     const { fullname, ...rest } = values;
     await action(rest);
+    reset();
   }
 
   return (

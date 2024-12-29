@@ -12,31 +12,16 @@ export const navbar = [
 
 export const donorSidebar = [
   {
-    id: 1,
     label: "Zakaat Applications",
     path: APP_PATHS.ZAKAAT_APPLICATIONS,
     icon: ICONS["zakaat-applications"],
   },
   {
-    id: 2,
     label: "Bookmarks",
     path: APP_PATHS.BOOKMARKED_APPLICATIONS,
     icon: ICONS.bookmarks,
   },
   {
-    id: 3,
-    label: "My Profile",
-    path: APP_PATHS.DONOR_PROFILE,
-    icon: ICONS["my-profile"],
-  },
-  {
-    id: 4,
-    label: "My Connections",
-    path: APP_PATHS.MY_CONNECTIONS,
-    icon: ICONS["my-connections"],
-  },
-  {
-    id: 5,
     label: "Donations History",
     path: APP_PATHS.DONATIONS_HISTORY,
     icon: ICONS["donations-history"],
@@ -45,22 +30,19 @@ export const donorSidebar = [
 
 export const verifierSidebar = [
   {
-    id: 1,
-    label: "Apply",
-    path: APP_PATHS.APPLY,
-    icon: ICONS["apply-zakaat-application"],
-  },
-  {
-    id: 2,
     label: "Search Applicant",
     path: APP_PATHS.SEARCH_APPLICANT,
     icon: ICONS["search-black"],
   },
   {
-    id: 2,
-    label: "My Profile",
-    path: APP_PATHS.VERIFIER_PROFILE,
-    icon: ICONS["my-profile"],
+    label: "Apply",
+    path: APP_PATHS.APPLY,
+    icon: ICONS["apply-zakaat-application"],
+  },
+  {
+    label: "Edit",
+    path: APP_PATHS.EDIT_APPLICATION,
+    icon: ICONS.edit,
   },
 ];
 

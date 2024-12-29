@@ -10,15 +10,15 @@ const APP_PATHS = {
 
   ZAKAAT_APPLICATIONS: "/donor/genuine-applications",
   BOOKMARKED_APPLICATIONS: "/donor/bookmarked-applications",
-  DONOR_PROFILE: "/donor/my-profile",
-  MY_CONNECTIONS: "/donor/my-connections",
   DONATIONS_HISTORY: "/donor/donations-history",
   WELCOME: "/auth/welcome",
 
   SEARCH_APPLICANT: "/verifier/search-applicant",
   APPLY: "/verifier/apply",
   EDIT_APPLICATION: "/verifier/edit",
-  VERIFIER_PROFILE: "/verifier/my-profile",
+
+  TWEETS: "/donor/tweets",
+  FOLLOWING_TWEETS: "/donor/following-tweets",
 };
 
 export default APP_PATHS;

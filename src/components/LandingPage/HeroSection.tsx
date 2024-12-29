@@ -37,8 +37,7 @@ export default function HeroSection() {
             Fulfill your duty of Zakat with purpose, backed by the power of
             Artificial Intelligence. Our platform ensures your contributions
             reach truly deserving Muslims by safeguarding against fraudulent
-            applications. Connect with those genuinely in need, all for the sake
-            of Allah and the upliftment of our community.
+            applications. Connect with those genuinely in need.
           </p>
         </div>
         <div className="flex gap-4 justify-center">

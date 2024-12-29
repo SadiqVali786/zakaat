@@ -16,7 +16,7 @@ export default function VerifierLeftSidebar() {
         <div className="w-full">
           {verifierSidebar.map((item) => (
             <SubMenu
-              key={item.id}
+              key={item.label}
               icon={item.icon}
               title={item.label}
               path={item.path}
