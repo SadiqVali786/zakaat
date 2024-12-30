@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useActionState, useEffect } from "react";
+import { startTransition, useActionState, useEffect } from "react";
 import { editApplicationAction } from "@/actions/application.actions";
 import { applicationSchema } from "@/lib/validators/application.validator";
 import { Switch } from "@/components/ui/switch";
@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import APP_PATHS from "@/config/path.config";
 import { useApplicationStoreSelector } from "@/store/application-store";
 import useAuthorization from "@/hooks/useAuthorization";
+import { toast } from "@/hooks/use-toast";
 
 const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
   const { session, router } = useAuthorization();
@@ -69,13 +70,29 @@ const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
     }
   }, [actionState]);
 
-  async function onSubmit(values: z.infer<typeof applicationSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    // console.log(values);
-    const { fullname, ...rest } = values;
-    await action(rest);
-    reset();
+  async function onSubmit(payload: z.infer<typeof applicationSchema>) {
+    try {
+      const { fullname, ...rest } = payload;
+      startTransition(async () => {
+        await action(rest);
+      });
+      reset();
+      if (actionState?.status)
+        toast({
+          title: actionState?.message,
+          variant: "default",
+        });
+      else
+        toast({
+          title: actionState?.message,
+          variant: "destructive",
+        });
+    } catch (error) {
+      toast({
+        title: "Internal server error",
+        variant: "destructive",
+      });
+    }
   }
 
   return (

@@ -3,6 +3,7 @@
 
 import { auth } from "@/auth";
 import { TWEETS_PER_PAGE } from "@/config/app.config";
+import APP_PATHS from "@/config/path.config";
 import prisma from "@/db";
 import {
   ErrorHandler,
@@ -13,6 +14,7 @@ import { idSchema } from "@/lib/validators/global";
 import { searchTermSchema } from "@/lib/validators/search.validators";
 import { createTweetSchema } from "@/lib/validators/tweet.validators";
 import { ROLE } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 // PUBLIC
@@ -70,6 +72,7 @@ export const createTweetAction = async (
     const tweet = await prisma.tweet.create({
       data: { ...payload, authorId: session.user.id },
     });
+    revalidatePath(APP_PATHS.TWEETS);
     return new SuccessResponse("new tweet created", 201).serialize();
     // #########################################################
   } catch (error) {
@@ -124,21 +127,3 @@ export const fetchFollowingTweetsAction = async (
     return standardizedApiError(error);
   }
 };
-
-// export const searchTweetsAction = withSession<
-//   searchTermSchemaType,
-//   ServerActionReturnType
-// >(async (session, text) => {
-//   text = searchTermSchema.parse(text);
-//   const searchedResults = await prisma.tweet.findMany({
-//     where: {
-//       OR: [{ text: { contains: text.searchTerm, mode: "insensitive" } }],
-//     },
-//     orderBy: { createdAt: "desc" },
-//   });
-//   return new SuccessResponse(
-//     "relavent tweets fetched in descending order",
-//     200,
-//     searchedResults
-//   ).serialize();
-// });

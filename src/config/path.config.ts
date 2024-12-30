@@ -18,6 +18,8 @@ const APP_PATHS = {
   EDIT_APPLICATION: "/verifier/edit",
 
   TWEETS: "/donor/tweets",
+  SEARCH_TWEETS: "/donor/tweets/search",
+  SEARCH_APPLICATIONS: "/donor/genuine-applications/search",
   FOLLOWING_TWEETS: "/donor/following-tweets",
 };
 

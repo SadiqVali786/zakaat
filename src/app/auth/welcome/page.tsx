@@ -9,7 +9,7 @@ import Image from "next/image";
 
 import { Form } from "@/components/ui/form";
 import { ROLE } from "@prisma/client";
-import { useActionState, useEffect, useState } from "react";
+import { startTransition, useActionState, useEffect, useState } from "react";
 import SignupStepOne from "@/components/signup-step-one";
 import SignupStepTwo from "@/components/signup-step-two";
 import SignupStepThree from "@/components/signup-step-three";
@@ -20,6 +20,7 @@ import { redirect, useRouter } from "next/navigation";
 import APP_PATHS from "@/config/path.config";
 import { signOut, useSession } from "next-auth/react";
 import useAuthorization from "@/hooks/useAuthorization";
+import { toast } from "@/hooks/use-toast";
 
 const SignupPage = () => {
   const [step, setStep] = useState(1);
@@ -45,10 +46,27 @@ const SignupPage = () => {
 
   // 2. Define a submit handler.
   async function onSubmit(payload: z.infer<typeof signupFormSchema>) {
-    // console.log(payload);
-    await action(payload);
-    await signOut();
-    router.push(APP_PATHS.SIGNIN);
+    try {
+      startTransition(async () => {
+        await action(payload);
+      });
+      if (actionState?.status)
+        toast({
+          title: actionState?.message,
+          variant: "default",
+        });
+      else
+        toast({
+          title: actionState?.message,
+          variant: "destructive",
+        });
+      await signOut({ redirectTo: APP_PATHS.SIGNIN });
+    } catch (error) {
+      toast({
+        title: "Internal server error",
+        variant: "destructive",
+      });
+    }
   }
 
   return (

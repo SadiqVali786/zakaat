@@ -39,7 +39,7 @@ const HistoryScrollFeed = ({ id }: { id: string }) => {
     if (actionState && actionState.additional.length && isPending == false) {
       const additional = actionState.additional as Application[];
       const length = additional.length;
-      console.log(additional);
+      // console.log(additional);
       setCursor(additional[length - 1].id);
       setApplications((prev) => [...prev, ...additional]);
     }

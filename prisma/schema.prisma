@@ -57,10 +57,10 @@ model Application {
   verifierUserId   String?
   donatedUserId    String?
 
-  Acceptor       User  @relation("Acceptor", fields: [authorId], references: [id])
-  Verifier       User? @relation("Verifier", fields: [verifierUserId], references: [id])
+  Acceptor       User  @relation("Acceptor", fields: [authorId], references: [id], onDelete: Cascade)
+  Verifier       User? @relation("Verifier", fields: [verifierUserId], references: [id]) // IMP: DON"T ALLOW VERIFIER ACCOUNT INFO TO GET DELETED FROM DB
   DonorBookmarks User? @relation("DonorBookmarks", fields: [bookmarkedUserId], references: [id])
-  DonorDonated   User? @relation("DonorDonated", fields: [donatedUserId], references: [id])
+  DonorDonated   User? @relation("DonorDonated", fields: [donatedUserId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -71,7 +71,7 @@ model Tweet {
   text     String
   authorId String
 
-  Donor User @relation(fields: [authorId], references: [id])
+  Donor User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

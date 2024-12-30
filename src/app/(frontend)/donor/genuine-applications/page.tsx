@@ -45,7 +45,7 @@ const GenuineApplications = async () => {
   };
   const result = await fetchInfiniteApplicationsFeed({}, { distance: 0 });
   const applications = result.additional as PaginatedOutput<Application>;
-  console.log(applications.cursor.firstBatch[0]);
+  // console.log(applications.cursor.firstBatch);
   const length = applications.cursor.firstBatch.length;
 
   return (
@@ -62,9 +62,13 @@ const GenuineApplications = async () => {
             text={application.details.reason}
           />
         ))}
-        <InfiniteScrollFeed
-          dis={applications.cursor.firstBatch[length - 1].distance}
-        />
+        {length ? (
+          <InfiniteScrollFeed
+            dis={applications.cursor.firstBatch[length - 1].distance}
+          />
+        ) : (
+          <></>
+        )}
       </div>
     </main>
   );

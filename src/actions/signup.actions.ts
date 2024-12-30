@@ -50,7 +50,10 @@ export const signupAction = async (
         },
       },
     });
-    return new SuccessResponse("", 201).serialize();
+    return new SuccessResponse(
+      "User Registration Successfull",
+      201
+    ).serialize();
     // #########################################################
   } catch (error) {
     return standardizedApiError(error);

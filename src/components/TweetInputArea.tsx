@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { startTransition, useActionState } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -9,6 +9,7 @@ import { $getRoot } from "lexical";
 import Image from "next/image";
 import DP from "@/../public/dashboard/dp.png";
 import Post from "@/../public/Icons/dashboard/send.png";
+import { createTweetAction } from "@/actions/tweet.actions";
 
 const initialConfig = {
   namespace: "TweetEditor",
@@ -19,11 +20,18 @@ const initialConfig = {
 
 function SaveTweetButton() {
   const [editor] = useLexicalComposerContext();
+  const [actionState, action, isPending] = useActionState(
+    createTweetAction,
+    null
+  );
 
-  const saveTweet = () => {
-    editor.update(() => {
+  const saveTweet = async () => {
+    editor.update(async () => {
       const rawContent = $getRoot().getTextContent();
-      console.log("Saved Tweet:", rawContent); // Replace with API call to save
+      console.log("Saved Tweet:", rawContent); // TODO: test whether it is saving or not
+      startTransition(async () => {
+        await action({ text: rawContent });
+      });
     });
   };
 

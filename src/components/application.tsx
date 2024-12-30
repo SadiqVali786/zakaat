@@ -1,7 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import React, { useActionState, useEffect, useState } from "react";
+import React, {
+  startTransition,
+  useActionState,
+  useEffect,
+  useState,
+} from "react";
 import Reciever1 from "@/../public/dashboard/genuine-applications/reciever1.png";
 import DP from "@/../public/dashboard/dp.png";
 import more from "@/../public/Icons/more_vertical_color.png";
@@ -49,9 +54,9 @@ const Application = ({
     null
   );
 
-  useEffect(() => {
-    console.log({ bookmarkActionState });
-  }, [bookmarkActionState]);
+  // useEffect(() => {
+  //   console.log({ bookmarkActionState });
+  // }, [bookmarkActionState]);
 
   return (
     <div className="xs:border-x xs:border-t border-b-[1px] border-neutral-11 xs:rounded-[15px] flex flex-col gap-y-[10px] px-5 w-full min-h-[200vh]">
@@ -97,8 +102,9 @@ const Application = ({
                   <p
                     className="hover:bg-neutral-10 py-1 pt-2 px-4 cursor-pointer"
                     onClick={async () => {
-                      console.log({ id });
-                      await bookmarkAction({ id });
+                      startTransition(async () => {
+                        await bookmarkAction({ id });
+                      });
                       // console.log(actionState);
                     }}
                   >
@@ -122,7 +128,9 @@ const Application = ({
                   <p
                     className="hover:bg-neutral-10 py-1 pt-2 px-4 cursor-pointer"
                     onClick={async () => {
-                      await donateAction({ id });
+                      startTransition(async () => {
+                        await donateAction({ id });
+                      });
                       // console.log(actionState1);
                     }}
                   >
@@ -131,7 +139,9 @@ const Application = ({
                   <p
                     className="hover:bg-neutral-10 py-1 pt-2 px-4 cursor-pointer"
                     onClick={async () => {
-                      await discardAction({ id });
+                      startTransition(async () => {
+                        await discardAction({ id });
+                      });
                       // console.log(actionState1);
                     }}
                   >
@@ -161,7 +171,9 @@ const Application = ({
                   <p
                     className="hover:bg-neutral-10 py-1 pt-2 px-4 cursor-pointer"
                     onClick={async () => {
-                      await deleteAction({ id });
+                      startTransition(async () => {
+                        await deleteAction({ id });
+                      });
                       // console.log(actionState1);
                     }}
                   >

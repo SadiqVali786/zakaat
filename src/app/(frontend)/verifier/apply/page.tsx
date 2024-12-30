@@ -17,16 +17,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { useActionState } from "react";
+import { startTransition, useActionState } from "react";
 import { usePathname } from "next/navigation";
 import { ICONS } from "@/lib/icons";
 import Image from "next/image";
 import { createApplicationAction } from "@/actions/application.actions";
 import { applicationSchema } from "@/lib/validators/application.validator";
 import useAuthorization from "@/hooks/useAuthorization";
+import { toast } from "@/hooks/use-toast";
 
 const FormWithShadcn = () => {
-  // const { session, router } = useAuthorization();
+  const { session, router } = useAuthorization();
   const [actionState, action, isPending] = useActionState(
     createApplicationAction,
     null
@@ -40,7 +41,26 @@ const FormWithShadcn = () => {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof applicationSchema>) {
-    await action(values);
+    try {
+      startTransition(async () => {
+        await action(values);
+      });
+      if (actionState?.status)
+        toast({
+          title: actionState?.message,
+          variant: "default",
+        });
+      else
+        toast({
+          title: actionState?.message,
+          variant: "destructive",
+        });
+    } catch (error) {
+      toast({
+        title: "Internal Server Error",
+        variant: "destructive",
+      });
+    }
   }
 
   const pathname = usePathname();

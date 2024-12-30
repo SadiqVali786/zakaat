@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const phoneNumSchema = z.object({
-  upiPhoneNum: z
+  phoneNum: z
     .string()
     .trim()
     .regex(/^\d{10}$/, "Phone number must be exactly 10 digits."),

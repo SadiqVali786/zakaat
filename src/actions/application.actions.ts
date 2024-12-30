@@ -3,6 +3,7 @@
 
 import { auth } from "@/auth";
 import { APPLICATIONS_PER_PAGE, TWEETS_PER_PAGE } from "@/config/app.config";
+import APP_PATHS from "@/config/path.config";
 import prisma from "@/db";
 import {
   ErrorHandler,
@@ -11,7 +12,12 @@ import {
 import { SuccessResponse } from "@/lib/api-error-success-handlers/success";
 import { applicationSchema } from "@/lib/validators/application.validator";
 import { idSchema } from "@/lib/validators/global";
+import {
+  phoneNumSchema,
+  searchTermSchema,
+} from "@/lib/validators/search.validators";
 import { ROLE, STATUS } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 // PUBLIC
@@ -206,18 +212,17 @@ export const deleteAplicationAction = async (
   }
 };
 
-// TODO: prepare PhoeNum Schema
 export const searchApplicationByPhoneNum = async (
   previousState: any,
   payload: PhoneNum
 ) => {
-  // payload = idSchema.parse(payload);
+  payload = phoneNumSchema.parse(payload);
   const session = await auth();
-  // if (!session || !session.user || session.user.role !== ROLE.VERIFIER)
-  //   throw new ErrorHandler(
-  //     "You must be authenticated as VERIFIER to access this resource",
-  //     "UNAUTHORIZED"
-  //   );
+  if (!session || !session.user || session.user.role !== ROLE.VERIFIER)
+    throw new ErrorHandler(
+      "You must be authenticated as VERIFIER to access this resource",
+      "UNAUTHORIZED"
+    );
   // #########################################################
   try {
     const foundApplication = await prisma.user.findUnique({
@@ -275,6 +280,8 @@ export const donateApplicationAction = async (
         bookmarkedUserId: null,
       },
     });
+    revalidatePath(APP_PATHS.BOOKMARKED_APPLICATIONS);
+    revalidatePath(APP_PATHS.DONATIONS_HISTORY);
     return new SuccessResponse(
       "application status changed to DONATED",
       200
@@ -290,9 +297,7 @@ export const bookmarkApplicationAction = async (
   payload: z.infer<typeof idSchema>
 ) => {
   try {
-    console.log(payload);
     payload = idSchema.parse(payload);
-    console.log(payload);
     const session = await auth();
     if (!session || !session.user || session.user.role !== ROLE.DONOR)
       throw new ErrorHandler(
@@ -304,6 +309,8 @@ export const bookmarkApplicationAction = async (
       where: { id: payload.id },
       data: { status: STATUS.BOOKMARKED, bookmarkedUserId: session?.user.id },
     });
+    revalidatePath(APP_PATHS.ZAKAAT_APPLICATIONS);
+    revalidatePath(APP_PATHS.BOOKMARKED_APPLICATIONS);
     return new SuccessResponse(
       "application status changed to BOOKMARKED",
       200
@@ -331,6 +338,8 @@ export const discardApplicationAction = async (
       where: { id: payload.id },
       data: { status: STATUS.VERIFIED, bookmarkedUserId: null },
     });
+    revalidatePath(APP_PATHS.BOOKMARKED_APPLICATIONS);
+    revalidatePath(APP_PATHS.ZAKAAT_APPLICATIONS);
     return new SuccessResponse(
       "application status is changed to VERIFIED from BOOKMARKED",
       200

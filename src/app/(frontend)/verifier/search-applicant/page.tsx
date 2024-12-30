@@ -20,18 +20,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useActionState, useEffect } from "react";
+import { startTransition, useActionState, useEffect } from "react";
 import { searchApplicationByPhoneNum } from "@/actions/application.actions";
 import { useRouter } from "next/navigation";
 import APP_PATHS from "@/config/path.config";
 import { useApplicationStoreSelector } from "@/store/application-store";
-
-const formSchema = z.object({
-  phoneNum: z
-    .string()
-    .trim()
-    .regex(/^\d{10}$/, "Phone number must be exactly 10 digits."),
-});
+import { phoneNumSchema } from "@/lib/validators/search.validators";
+import { toast } from "@/hooks/use-toast";
 
 const Page = () => {
   const navigate = useRouter();
@@ -43,8 +38,8 @@ const Page = () => {
   const setReason = useApplicationStoreSelector.use.setReason();
 
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof phoneNumSchema>>({
+    resolver: zodResolver(phoneNumSchema),
     // defaultValues: {
     //   username: "",
     // },
@@ -70,8 +65,27 @@ const Page = () => {
   }, [actionState]);
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    await action({ phoneNum: values.phoneNum });
+  async function onSubmit(payload: z.infer<typeof phoneNumSchema>) {
+    try {
+      startTransition(async () => {
+        await action({ ...payload });
+      });
+      if (actionState?.status)
+        toast({
+          title: actionState?.message,
+          variant: "default",
+        });
+      else
+        toast({
+          title: actionState?.message,
+          variant: "destructive",
+        });
+    } catch (error) {
+      toast({
+        title: "Internal server error",
+        variant: "destructive",
+      });
+    }
   }
 
   return (
