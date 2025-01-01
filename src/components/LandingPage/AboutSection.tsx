@@ -1,9 +1,10 @@
 import AboutProduct from "@/../public/AboutSection.png";
 import PlayButton from "@/../public/PlayButton.png";
-import Ellipse from "@/../public/Ellipse.png";
+// import Ellipse from "@/../public/Ellipse.png";
 import Image from "next/image";
 import Link from "next/link";
 import Pill from "./Pill";
+import { BACKGROUND_IMAGES } from "@/lib/background-images";
 
 export default function AboutSection() {
   return (
@@ -19,7 +20,7 @@ export default function AboutSection() {
         <div className="bottom-0 top-[50%] bg-gradient-to-t from-brand-dark left-0 right-0 absolute z-10" />
       </Link>
       <Image
-        src={Ellipse}
+        src={BACKGROUND_IMAGES.ellipse}
         alt="Light"
         className="absolute -top-16 sm:-top-10 -z-10 h-[300px] w-full"
       />

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { ICONS, IMAGES } from "@/lib/icons";
+import { ICONS } from "@/lib/icons";
+import { IMAGES } from "@/lib/images";
 import { ROLE } from "@prisma/client";
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";

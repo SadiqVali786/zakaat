@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { ICONS, IMAGES } from "@/lib/icons";
+import { ICONS } from "@/lib/icons";
 import Image from "next/image";
 import { UseFormReturn } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ROLE } from "@prisma/client";
+import { IMAGES } from "@/lib/images";
 
 const SignupStepTwo = ({
   form,

@@ -2,15 +2,40 @@ import APP_PATHS from "@/config/path.config";
 import { ICONS } from "../icons";
 
 // export const GITHUB_REPO = "https://github.com/----";
-
-export const navbar = [
-  { id: 1, label: "Home", path: APP_PATHS.HOME },
-  { id: 2, label: "About", path: APP_PATHS.ABOUT },
-  { id: 2, label: "Download", path: APP_PATHS.DOWNLOAD },
-  { id: 2, label: "Contactus", path: APP_PATHS.CONTACT_US },
+export const NAVBAR_LINKS = [
+  {
+    title: "Home",
+    link: APP_PATHS.HOME,
+  },
+  {
+    title: "Tweets",
+    link: APP_PATHS.TWEETS,
+  },
+  {
+    title: "Applications",
+    link: APP_PATHS.ZAKAAT_APPLICATIONS,
+  },
+  {
+    title: "Download",
+    link: APP_PATHS.DOWNLOAD,
+  },
+  {
+    title: "ContactUs",
+    link: APP_PATHS.CONTACT_US,
+  },
 ];
 
 export const donorSidebar = [
+  {
+    label: "Tweets",
+    path: APP_PATHS.TWEETS,
+    icon: ICONS.tweets,
+  },
+  {
+    label: "Following Tweets",
+    path: APP_PATHS.FOLLOWING_TWEETS,
+    icon: ICONS["following-tweets"],
+  },
   {
     label: "Zakaat Applications",
     path: APP_PATHS.ZAKAAT_APPLICATIONS,

@@ -2,7 +2,7 @@
 
 import APP_PATHS from "@/config/path.config";
 import { toast } from "@/hooks/use-toast";
-import { LOGOS } from "@/lib/icons";
+import { LOGOS } from "@/lib/logos";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 
