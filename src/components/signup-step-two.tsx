@@ -14,9 +14,7 @@ import {
 import { ROLE } from "@prisma/client";
 import { IMAGES } from "@/lib/images";
 
-const SignupStepTwo = ({
-  form,
-}: {
+type Props = {
   form: UseFormReturn<
     {
       fullname: string;
@@ -29,7 +27,9 @@ const SignupStepTwo = ({
     any,
     undefined
   >;
-}) => {
+};
+
+const SignupStepTwo: React.FC<Props> = ({ form }) => {
   const inputValues = form.watch();
   return (
     <>

@@ -4,12 +4,9 @@ import { ICONS } from "@/lib/icons";
 import { IMAGES } from "@/lib/images";
 import { ROLE } from "@prisma/client";
 import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
 import { UseFormReturn } from "react-hook-form";
 
-const SignupStepThree = ({
-  form,
-}: {
+type Props = {
   form: UseFormReturn<
     {
       fullname: string;
@@ -22,7 +19,9 @@ const SignupStepThree = ({
     any,
     undefined
   >;
-}) => {
+};
+
+const SignupStepThree: React.FC<Props> = ({ form }) => {
   const inputValues = form.watch();
 
   const setLatAndLongValues = () => {

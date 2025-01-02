@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-
 import {
   FormControl,
   FormField,
@@ -14,9 +12,7 @@ import { cn } from "@/lib/utils";
 import { ROLE } from "@prisma/client";
 import { UseFormReturn } from "react-hook-form";
 
-const SignupStepOne = ({
-  form,
-}: {
+type Props = {
   form: UseFormReturn<
     {
       fullname: string;
@@ -29,7 +25,9 @@ const SignupStepOne = ({
     any,
     undefined
   >;
-}) => {
+};
+
+const SignupStepOne: React.FC<Props> = ({ form }) => {
   return (
     <>
       <FormField

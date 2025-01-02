@@ -1,10 +1,9 @@
 "use client";
 
 import { fetchInfiniteApplicationsFeed } from "@/actions/application.actions";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Application from "./application";
-import { useSession } from "next-auth/react";
-import useAuthorization from "@/hooks/useAuthorization";
+import useModifiedInfiniteScroll from "@/hooks/use-modified-infinite-scroll";
 
 type PaginatedOutput<T> = {
   cursor: {
@@ -15,7 +14,6 @@ type PaginatedOutput<T> = {
   ok: number;
   hasMore: boolean;
 };
-
 type Application = {
   _id: string;
   fullname: string;
@@ -32,8 +30,6 @@ type Application = {
 };
 
 export default function InfiniteScrollFeed({ dis = 0 }: { dis?: number }) {
-  const { session, router } = useAuthorization();
-
   const [applications, setApplications] = useState<Application[] | []>([]);
   const [distance, setDistance] = useState<number>(dis);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -42,7 +38,6 @@ export default function InfiniteScrollFeed({ dis = 0 }: { dis?: number }) {
     fetchInfiniteApplicationsFeed,
     null
   );
-
   useEffect(() => {
     if (
       actionState &&
@@ -51,46 +46,13 @@ export default function InfiniteScrollFeed({ dis = 0 }: { dis?: number }) {
     ) {
       const additional = actionState.additional as PaginatedOutput<Application>;
       const length = additional.cursor.firstBatch.length;
-      // console.log(additional);
-      // console.log(additional.cursor);
       setHasMore(additional.hasMore);
       setDistance(additional.cursor.firstBatch[length - 1].distance);
       setApplications((prev) => [...prev, ...additional.cursor.firstBatch]);
     }
   }, [actionState, isPending]);
 
-  // useEffect(() => {
-  //   console.log({ applications });
-  //   console.log({ distance });
-  // }, [applications]);
-
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout | null = null;
-
-    const handleScroll = async () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-          document.documentElement.offsetHeight - 100 &&
-        isPending === false &&
-        hasMore
-      ) {
-        if (timeoutId) return;
-
-        timeoutId = setTimeout(() => {
-          timeoutId = null;
-          startTransition(() => {
-            action({ distance });
-          });
-        }, 1000);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [hasMore]);
+  useModifiedInfiniteScroll({ action, hasMore, distance, isPending });
 
   return (
     <div>
@@ -98,7 +60,7 @@ export default function InfiniteScrollFeed({ dis = 0 }: { dis?: number }) {
         <Application
           key={application.details._id}
           id={application.details._id}
-          fullName={session?.data?.user.fullname || ""}
+          fullName={application.fullname}
           money={application.details.amount}
           rank={application.details.rating}
           text={application.details.reason}

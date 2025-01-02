@@ -20,7 +20,6 @@ import { editApplicationAction } from "@/actions/application.actions";
 import { applicationSchema } from "@/lib/validators/application.validator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useRouter } from "next/navigation";
 import APP_PATHS from "@/config/path.config";
 import { useApplicationStoreSelector } from "@/store/application-store";
 import useAuthorization from "@/hooks/useAuthorization";

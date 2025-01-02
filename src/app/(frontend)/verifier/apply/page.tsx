@@ -27,7 +27,7 @@ import useAuthorization from "@/hooks/useAuthorization";
 import { toast } from "@/hooks/use-toast";
 
 const FormWithShadcn = () => {
-  const { session, router } = useAuthorization();
+  // const { session, router } = useAuthorization();
   const [actionState, action, isPending] = useActionState(
     createApplicationAction,
     null

@@ -25,7 +25,7 @@ export default function RootLayout({
       <body
         className={twMerge(
           dm_sans.className,
-          "antialiased flex flex-col text-blue-50 max-w-[1280px] min-h-screen mx-auto xs:px-4 overflow-x-hidden"
+          "antialiased flex flex-col text-blue-50 max-w-[1440px] min-h-screen mx-auto xs:px-4 overflow-x-hidden"
         )}
       >
         <AuthProvider>

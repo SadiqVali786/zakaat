@@ -5,7 +5,7 @@ import searchIcon from "@/../public/Icons/dashboard/search.png";
 import { usePathname, useRouter } from "next/navigation";
 import APP_PATHS from "@/config/path.config";
 
-const Input = () => {
+const Searchbar = () => {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -41,4 +41,4 @@ const Input = () => {
   );
 };
 
-export default Input;
+export default Searchbar;

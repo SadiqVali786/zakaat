@@ -1,38 +1,26 @@
 "use client";
 
 import { fetchTweetsAction } from "@/actions/tweet.actions";
-import { TWEETS_PER_PAGE } from "@/config/app.config";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Tweet from "./Tweet";
-
+import { TWEETS_PER_PAGE } from "@/config/app.config";
 import DP from "@/../public/dashboard/dp.png";
-import useAuthorization from "@/hooks/useAuthorization";
+import { TweetTypes } from "@/types/tweet.types";
+import useInfiniteScroll from "@/hooks/use-infinite-scroll";
 
-const TweetsScrollFeed = ({ id }: { id?: string }) => {
-  const { session, router } = useAuthorization();
+type Props = { id?: string };
 
-  type Tweet = {
-    id: string;
-    text: string;
-    createdAt: Date;
-    Donor: {
-      fullname: string;
-      selfie: string;
-    };
-  };
-
-  const [tweets, setTweets] = useState<Tweet[] | []>([]);
-  const [cursor, setCursor] = useState<string | undefined>(id);
-
+const TweetsScrollFeed: React.FC<Props> = ({ id }) => {
   const [actionState, action, isPending] = useActionState(
     fetchTweetsAction,
     null
   );
 
+  const [tweets, setTweets] = useState<TweetTypes[] | []>([]);
+  const [cursor, setCursor] = useState<string | undefined>(id);
   useEffect(() => {
-    if (actionState && actionState.additional && isPending == false) {
-      const additional = actionState.additional as Tweet[];
-      // console.log(actionState);
+    if (actionState && actionState.additional.length && isPending == false) {
+      const additional = actionState.additional as TweetTypes[];
       const length = additional.length;
       if (length === TWEETS_PER_PAGE) setCursor(additional[length - 1].id);
       else setCursor(undefined);
@@ -40,38 +28,7 @@ const TweetsScrollFeed = ({ id }: { id?: string }) => {
     }
   }, [actionState, isPending]);
 
-  // useEffect(() => {
-  //   console.log(tweets);
-  //   console.log(cursor);
-  // }, [tweets]);
-
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout | null = null;
-
-    const handleScroll = async () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-          document.documentElement.offsetHeight - 100 &&
-        isPending === false &&
-        cursor
-      ) {
-        if (timeoutId) return;
-
-        timeoutId = setTimeout(() => {
-          timeoutId = null;
-          startTransition(() => {
-            action({ id: cursor });
-          });
-        }, 1000);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [cursor]);
+  useInfiniteScroll({ action, cursor, isPending });
 
   return (
     <div>

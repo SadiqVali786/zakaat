@@ -41,7 +41,7 @@ export default async function Home() {
   // if (tweets.length === 0) return <></>;
 
   return (
-    <main className="flex-grow border-x-[1px] border-neutral-11 max-w-[708px] h-full">
+    <main className="grow border-x-[1px] border-neutral-11 h-full w-full">
       <div className="flex flex-col">
         <TweetsFeedBar />
         <TweetInputArea />

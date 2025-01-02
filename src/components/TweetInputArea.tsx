@@ -18,7 +18,7 @@ const initialConfig = {
   nodes: [],
 };
 
-function SaveTweetButton() {
+function PostTweetButton() {
   const [editor] = useLexicalComposerContext();
   const [actionState, action, isPending] = useActionState(
     createTweetAction,
@@ -61,7 +61,7 @@ export default function TweetInput() {
             ErrorBoundary={() => <div>Error loading editor</div>}
           />
         </div>
-        <SaveTweetButton />
+        <PostTweetButton />
       </div>
     </LexicalComposer>
   );

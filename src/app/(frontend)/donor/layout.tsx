@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="antialiased flex text-blue-50 max-w-[1280px] min-h-screen mx-auto xs:px-4 overflow-x-hidden">
+      <body className="antialiased max-w-[1440px] text-blue-50 min-h-screen overflow-x-hidden mx-auto">
         <AuthProvider>
           <ThemeProvider
             attribute="class"
@@ -29,12 +29,20 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <DonorLeftSidebar />
-            <div className="grow">
-              {children}
-              <MobileNavbar />
-            </div>
-            <RightSidebar />
+            <main
+              className="flex w-full mx-auto"
+              style={{
+                paddingLeft: "clamp(1rem, 4.9vw, 5rem)",
+                paddingRight: "clamp(1rem, 4.9vw, 5rem)",
+              }}
+            >
+              <DonorLeftSidebar />
+              <div className="flex-grow w-full">
+                {children}
+                <MobileNavbar />
+              </div>
+              <RightSidebar />
+            </main>
             <Toaster />
           </ThemeProvider>
         </AuthProvider>

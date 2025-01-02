@@ -12,10 +12,7 @@ import {
 import { SuccessResponse } from "@/lib/api-error-success-handlers/success";
 import { applicationSchema } from "@/lib/validators/application.validator";
 import { idSchema } from "@/lib/validators/global";
-import {
-  phoneNumSchema,
-  searchTermSchema,
-} from "@/lib/validators/search.validators";
+import { phoneNumSchema } from "@/lib/validators/search.validators";
 import { ROLE, STATUS } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -365,12 +362,13 @@ type PaginatedOutput<T> = {
 };
 
 type Application = {
-  id: string;
+  _id: string;
   fullname: string;
   phoneNum: string;
   selfie: string;
   distance: number;
   details: {
+    _id: string;
     hide: boolean;
     amount: number;
     reason: string;
@@ -397,6 +395,16 @@ export const fetchBookmarkedApplicationsFeedAction = async (
   try {
     const applications = await prisma.application.findMany({
       where: { status: STATUS.BOOKMARKED, bookmarkedUserId: session?.user.id },
+      select: {
+        id: true,
+        hide: true,
+        amount: true,
+        rating: true,
+        reason: true,
+        Verifier: {
+          select: { id: true, fullname: true, phoneNum: true, selfie: true },
+        },
+      },
       take: TWEETS_PER_PAGE,
       skip: 1,
       cursor: { id: payload.id },
@@ -428,6 +436,16 @@ export const fetchHistoryApplicationsFeedAction = async (
   try {
     const applications = await prisma.application.findMany({
       where: { status: STATUS.DONATED, donatedUserId: session?.user.id },
+      select: {
+        id: true,
+        hide: true,
+        amount: true,
+        rating: true,
+        reason: true,
+        Verifier: {
+          select: { id: true, fullname: true, phoneNum: true, selfie: true },
+        },
+      },
       take: APPLICATIONS_PER_PAGE,
       skip: 1,
       cursor: { id: payload.id },

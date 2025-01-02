@@ -8,7 +8,7 @@ import Pill from "./Pill";
 
 export default function HeroSection() {
   return (
-    <div
+    <section
       className="mb-64 flex items-center justify-between gap-x-4 gap-y-11 flex-col md:flex-row hero-margin-right"
       style={{ marginLeft: "clamp(1rem, 4.9vw, 5rem)" }}
     >
@@ -66,9 +66,8 @@ export default function HeroSection() {
       <Image
         alt="Hero iPhone"
         src={iPhoneHero}
-        // style={{ objectFit: "cover", width: "clamp(233px, 28vw, 370px)" }}
         className="iphone-img-width-media-query"
       />
-    </div>
+    </section>
   );
 }

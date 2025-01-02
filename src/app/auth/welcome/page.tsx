@@ -9,16 +9,15 @@ import Image from "next/image";
 
 import { Form } from "@/components/ui/form";
 import { ROLE } from "@prisma/client";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import SignupStepOne from "@/components/signup-step-one";
 import SignupStepTwo from "@/components/signup-step-two";
 import SignupStepThree from "@/components/signup-step-three";
 
 import { signupFormSchema } from "@/lib/validators/auth.validator";
 import { signupAction } from "@/actions/signup.actions";
-import { redirect, useRouter } from "next/navigation";
 import APP_PATHS from "@/config/path.config";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import useAuthorization from "@/hooks/useAuthorization";
 import { toast } from "@/hooks/use-toast";
 

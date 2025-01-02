@@ -4,11 +4,6 @@ import Marquee from "@/components/ui/magicui/marquee";
 
 const reviews = [
   {
-    fullname: "Sadiq Vali",
-    body: "This platform has revolutionized the way I work. It's intuitive, flexible, and has made me more productive than ever before.",
-    img: "https://avatar.vercel.sh/sadiq",
-  },
-  {
     fullname: "Fatima Khan",
     body: "This platform has redefined how Zakat is distributed. Knowing that local activists verify every application gives me so much confidence. I’ve been able to help people in my community directly—such a fulfilling experience!",
     img: "https://avatar.vercel.sh/fatima",
