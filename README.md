@@ -4,6 +4,12 @@
 
 A Zakaat distribution web app that connects donors with verified, deserving individuals in their locality and among relatives who may hesitate to ask for help. Using AI to prevent fraud, the platform ensures Zakaat reaches those truly in need. Donors can support friends or relatives if they’re registered, while applicants can stay anonymous or share details to build trust.
 
+### Figma UI/UX Design Live Link
+
+<https://www.figma.com/design/VO5aSBXfFWmi5T31LDIQs3/HaqqueZakat?node-id=80-18620&t=n6i2BK4lvv9QF8oc-1>
+
+### Landing Page Sneak Peak
+
 ![Zakaat App Details](/public/images/git-display.png)
 
 ## Techologies Used
