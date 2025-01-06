@@ -11,3 +11,19 @@ export const applicationSchema = z.object({
   hide: z.boolean(),
   rating: z.coerce.number().min(0).max(10),
 });
+
+// https://www.youtube.com/watch?v=AeQ3f4zmSMs&t=1s
+// All 10 places for Zod in your React / Next.js app
+// FRONTEND
+// 1. Form Data
+// 2. Third-Party API
+// 3. API requests
+// 4. Local Storage
+// 5. URL domain.com?id=5&color=blue
+// BACKEND
+// 6. web hooks( => API Route)
+// 7. Third Party APIs( => API Route)
+// 8. Environment Variables
+// 9. File System
+// 10. URL domain.com?id=5&color=blue
+// 11. DB ORM

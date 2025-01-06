@@ -96,9 +96,9 @@ enum ROLE {
   VERIFIER
 }
 
+// @default(now())
 // @updatedAt
 // @unique
-// @default(now())
 // @@unique([name, age])
 // @@index([email, name])
 // @@id([email, name])
@@ -170,3 +170,116 @@ enum ROLE {
 //   id     String @id @default(uuid())
 //   author User?
 // }
+
+// npx prisma db push
+// npx prisma migrate dev 
+// apply changes to the deployed production DB ===> 
+// "scripts": {
+// 	"postinstall": "prisma generate && prisma migrate deploy"
+// }
+
+// ########################################################
+// ######################### QUERY ########################
+// ########################################################
+// https://www.youtube.com/watch?v=QXxy8Uv1LnQ
+// const posts = await prisma.post.findMany({
+// 	where: {
+// 		title: {
+// 			endsWith: "Post",
+// 			startsWIth: "Sadiq",
+// 			gt: 10,
+// 			lt: 5,
+// 			contains: "hahaha",
+// 		}
+// 	},
+// 	orderBy: {
+// 		createdAt: "desc",
+// 	},
+// 	select: {
+// 		id: true,
+// 		title: true,
+// 		slug: true,
+// 	},
+// 	take: 1,
+// 	skip: 1,
+// })
+// const postsCount = await prisma.post.count();
+
+// const user = await prisma.user.findUnique({
+// 	where: {
+// 		email: "rebirth4vali@gmail.com",
+// 	},
+// 	include: { posts: true }
+// })
+
+// await prisma.post.create({
+// 	data: {
+// 		title: formData.get("title") as string,
+// 		content: formData.get("content") as string,
+// 		author: {
+// 			connect: {
+// 				email: "rebirth4vali@gmail.com"
+// 			}
+// 		}
+// 	}
+// })
+// revalidatePath("/posts")
+
+// ########################################################
+// ####################### MUTATION #######################
+// ########################################################
+// export async funcytion editPost(formData: FormData), id: string) {
+// 	await prisma.post.update({
+// 		where: { id },
+// 		data: {
+// 			title: formData.get("title") as string,
+// 			content: formData.get("content") as string
+// 		}
+// 	})
+// 	revalidatePath("/posts")
+// }
+
+// await prisma.post.delete({
+// 	where: { id }
+// })
+
+// serverAction
+// try
+// catch
+// finally revalidate with optimisticUI
+
+// ########################################################
+// #################### PRISMA SEEDING ####################
+// ########################################################
+// https://www.prisma.io/docs/orm/prisma-migrate/workflows/seeding
+
+// To get types of the tables for in the seedfile
+// GOTO ===> node_modules/.prisma/client/index.d.ts ===> PostCreateInput
+// Use it in seed file as below
+// const initialPosts: Prisma.PostCreateInput[] = [
+// 	{
+// 		// prisma client suggestions will appear
+// 		title: "Post 1",
+// 		content: "Content of post 1",
+// 		author: {
+// 			connectOrCreate: {
+// 				where: {
+// 					email: "rebirth4vali@gmail.com"
+// 				}
+// 				create: {
+// 					email: "rebirth4vali@gmail.com",
+// 					fullname: "sadiq vali",
+// 					selfie: "",
+// 				}
+// 			}
+// 		}
+// 	},
+// 	{
+// 	}
+// ]
+
+// "prisma": {
+//   "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+// },
+
+// npx prisma db seed

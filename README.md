@@ -1,36 +1,149 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zakaat Mobile(Android, iOS) & Web App
 
-## Getting Started
+## Description
 
-First, run the development server:
+A Zakaat distribution web app that connects donors with verified, deserving individuals in their locality and among relatives who may hesitate to ask for help. Using AI to prevent fraud, the platform ensures Zakaat reaches those truly in need. Donors can support friends or relatives if they’re registered, while applicants can stay anonymous or share details to build trust.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+![Zakaat App Details](/public/images/git-display.png)
+
+## Techologies Used
+
+1. **Web-App:** Next.js 15, Typescript, Tailwindcss
+1. **Mobile-App(Android, iOS):** React Native Expo
+1. **Computer Vision AI:** Siamese Network for Fraud Detection via Face Verification (98.56% accurate)
+1. **NLP & Gen AI:** For Text Summarization
+1. **UI/UX Design:** Figma
+1. **Database:** Prisma ORM, MongoDB
+1. **Authentication:** NextAuth's Google Authentication
+1. **Contanerization:** Docker
+1. **Proximity Search:** Native MongoDB spherical $geoNear location API with pipeline
+1. **Deployment:** Kubernetes
+1. **Chatting:** Web-Sockets
+1. **Audio & Video Calls:** Web-RTC
+1. **Miscelleneous:** useActionState, useOptimistic, revalidatePath, Server Components within a Client Components, Semantic Tags, Query Parameters instead of useState, Modular Components & Code
+1. **Component Libraries:** Shadcn, Aceternity, MagicUI
+1. **Cloud-based Media Management Platform:** Cloudinary
+1. **Frontend State Management:** Zustand
+
+## Features in this Application
+
+1. ⏱️ Realtime Chatting between Donors and Applicants
+2. 🟢 Realtime Video Calls between Donors and Applicants
+3. 🤑 Fraud Zakaat Application Elimination with Face Verification
+4. 🚨 Fetching Applications Geographically nearest to the donors by using GPS coordinates
+5. 🔐 Custom Authentication
+6. 📚 Websockets
+7. 📣 Optimistic UI
+8. 📱 Responsive design
+9. 👾 Deployment
+10. 👨‍👨‍👧‍👦 Real-time Collaboration
+11. 🤯 Suggesting Zakaat Applications to fellow donors in your Network
+12. 😜 Bookmarking Applications
+
+<!-- Normal text
+
+HERE
+
+# Heading1
+
+## Heading2
+
+### Heading3
+
+#### Heading4
+
+##### Heading5
+
+###### Heading6
+
+gfm markdown
+
+This is **bold**
+
+This is _italics_
+
+This is **_bold&italics_**
+
+This is ~~crossed off~~
+
+This is ==highlight==
+
+This is <mark>highlight</mark>
+
+This is a ^superscript^
+
+X<sup>2</sup>
+
+This is a ~subscript~
+
+H<sub>2</sub>O
+
+:smile:
+
+😊
+
+This is
+
+```ts
+let c = 10;
+  ley y = 8;
+x = (c * y);
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[This is a link](https://google.com)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+<https://google.com>
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+https://google.com
 
-## Learn More
+[This is a link](/src/auth.ts)
 
-To learn more about Next.js, take a look at the following resources:
+![Zakaat Logo](/public/AboutSection.png)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+> Hi Buddy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> Hi Buddy
 
-## Deploy on Vercel
+> Hi Buddy
+> Hi Buddy
+>
+> > Hi Buddy
+> >
+> > > Hi Buddy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Horizontal
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+Line
+
+1. Item 1
+1. Item 2
+1. Item 3
+1. Item 3.1
+1. Item 3.2
+1. Item 3.3
+
+- Item 1
+- Item 2
+- Item 3
+
+* Item 1
+* Item 2
+* Item 3
+  - Item 3.1
+  - Item 3.2
+  - Item 3.3
+    1. Item 3.1
+    2. Item 3.2
+    3. Item 3.3
+
+| Col 1 |   Col 2 |
+| :---: | ------: |
+| This  |      is |
+|  an   | example |
+| table |    with |
+|  two  | columns |
+
+- [ ] sadiq
+- [x] vali -->
