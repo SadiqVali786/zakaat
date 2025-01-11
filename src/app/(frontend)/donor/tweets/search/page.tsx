@@ -1,29 +1,19 @@
-import { auth } from "@/auth";
 import Tweet from "@/components/Tweet";
-import TweetsFeedBar from "@/components/TweetsFeedBar";
 import { TWEETS_PER_PAGE } from "@/config/app.config";
 import prisma from "@/db";
-import { ErrorHandler } from "@/lib/api-error-success-handlers/error";
-import { ROLE } from "@prisma/client";
 import DP from "@/../public/dashboard/dp.png";
+import PageWrapper from "@/components/page-wrapper";
+import InfiniteFeedbar from "@/components/infinite-feed-bar";
 
 const SearchTweets = async ({
   searchParams,
 }: {
-  searchParams: { searchTerm: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  const session = await auth();
-  if (!session || !session.user || session.user.role !== ROLE.DONOR)
-    throw new ErrorHandler(
-      "You must be authenticated as DONOR to access this resource",
-      "UNAUTHORIZED"
-    );
-  const params = await searchParams;
-  // console.log({ searchTerm: params.searchTerm });
   const tweets = await prisma.tweet.findMany({
     where: {
       text: {
-        contains: params.searchTerm,
+        contains: searchParams.searchTerm as string,
         mode: "insensitive",
       },
     },
@@ -41,12 +31,11 @@ const SearchTweets = async ({
     take: TWEETS_PER_PAGE,
     orderBy: { createdAt: "desc" },
   });
-  // console.log({ tweets });
 
   return (
-    <main className="flex-grow border-x-[1px] border-neutral-11 max-w-[708px] h-full">
+    <PageWrapper>
       <div className="flex flex-col">
-        <TweetsFeedBar />
+        <InfiniteFeedbar type="tweets" />
         {tweets.map((tweet) => (
           <Tweet
             key={tweet.id}
@@ -58,7 +47,7 @@ const SearchTweets = async ({
           />
         ))}
       </div>
-    </main>
+    </PageWrapper>
   );
 };
 

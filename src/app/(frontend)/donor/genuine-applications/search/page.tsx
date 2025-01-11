@@ -1,52 +1,51 @@
-import { auth } from "@/auth";
 import Application from "@/components/application";
-import ApplicationsFeedBar from "@/components/applications-feed-bar";
+import InfiniteFeedbar from "@/components/infinite-feed-bar";
+import PageWrapper from "@/components/page-wrapper";
 import { APPLICATIONS_PER_PAGE } from "@/config/app.config";
 import prisma from "@/db";
-import { ErrorHandler } from "@/lib/api-error-success-handlers/error";
-import { ROLE } from "@prisma/client";
 
 const SearchApplications = async ({
   searchParams,
 }: {
-  searchParams: { searchTerm: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  const session = await auth();
-  if (!session || !session.user || session.user.role !== ROLE.DONOR)
-    throw new ErrorHandler(
-      "You must be authenticated as DONOR to access this resource",
-      "UNAUTHORIZED"
-    );
-  const params = await searchParams;
-  // console.log({ searchTerm: params.searchTerm });
   const applications = await prisma.application.findMany({
     where: {
       reason: {
-        contains: params.searchTerm,
+        contains: searchParams.searchTerm as string,
         mode: "insensitive",
+      },
+    },
+    select: {
+      id: true,
+      amount: true,
+      reason: true,
+      hide: true,
+      rating: true,
+      Verifier: {
+        select: { fullname: true, phoneNum: true, selfie: true, id: true },
       },
     },
     take: APPLICATIONS_PER_PAGE,
     orderBy: { createdAt: "desc" },
   });
-  // console.log({ applications });
 
   return (
-    <main className="grow xs:border-x-[1px] border-neutral-11 max-w-[708px] h-full relative">
-      <ApplicationsFeedBar />
+    <PageWrapper>
+      <InfiniteFeedbar type="tweets" />
       <div className="flex flex-col gap-y-5 xs:px-4 pt-5">
         {applications.map((application) => (
           <Application
             key={application.id}
             id={application.id}
-            fullName={session?.user.fullname}
+            fullName={application.Verifier?.fullname as string}
             money={application.amount}
             rank={application.rating}
             text={application.reason}
           />
         ))}
       </div>
-    </main>
+    </PageWrapper>
   );
 };
 

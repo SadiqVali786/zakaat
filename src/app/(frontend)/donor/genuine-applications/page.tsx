@@ -1,76 +1,37 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { fetchInfiniteApplicationsFeed } from "@/actions/application.actions";
-import { auth } from "@/auth";
 import Application from "@/components/application";
-import ApplicationsFeedBar from "@/components/applications-feed-bar";
-import InfiniteScrollFeed from "@/components/InfiniteScrollFeed";
-import {
-  APPLICATIONS_PER_PAGE,
-  DEFAULT_PAGE,
-  MAX_DISTANCE,
-} from "@/config/app.config";
-import APP_PATHS from "@/config/path.config";
-import prisma from "@/db";
-import { ROLE } from "@prisma/client";
-import { redirect } from "next/navigation";
+import ApplicationsInfiniteScrollFeed from "@/components/applications-infinite-scroll-feed";
+import InfiniteFeedbar from "@/components/infinite-feed-bar";
+import PageWrapper from "@/components/page-wrapper";
+import { APPLICATIONS_PER_PAGE } from "@/config/app.config";
+import { FetchedApplicationsType } from "@/types/application.types";
 
 const GenuineApplications = async () => {
-  const session = await auth();
-  if (!session || !session.user) redirect(APP_PATHS.SIGNIN);
-  if (!session.user.phoneNum) redirect(APP_PATHS.WELCOME);
-  if (session.user.role !== ROLE.DONOR) redirect(APP_PATHS.SIGNIN); // TODO: toaster text
-
-  type PaginatedOutput<T> = {
-    cursor: {
-      firstBatch: T[];
-      id: number;
-      ns: string;
-    };
-    ok: number;
-  };
-
-  type Application = {
-    _id: string;
-    fullname: string;
-    phoneNum: string;
-    selfie: string;
-    distance: number;
-    details: {
-      _id: string;
-      hide: boolean;
-      amount: number;
-      reason: string;
-      rating: number;
-    };
-  };
   const result = await fetchInfiniteApplicationsFeed({}, { distance: 0 });
-  const applications = result.additional as PaginatedOutput<Application>;
-  // console.log(applications.cursor.firstBatch);
-  const length = applications.cursor.firstBatch.length;
+  const applications: FetchedApplicationsType = result.additional.applications;
 
   return (
-    <main className="grow xs:border-x-[1px] border-neutral-11 max-w-[708px] h-full relative">
-      <ApplicationsFeedBar />
-      <div className="flex flex-col gap-y-5 xs:px-4 pt-5">
-        {applications.cursor.firstBatch.map((application) => (
+    <PageWrapper>
+      <InfiniteFeedbar type="applications" />
+      <div className="flex flex-col gap-y-5 xs:px-4 py-5">
+        {applications.map((application) => (
           <Application
-            key={application.details._id}
-            id={application.details._id}
-            fullName={session?.user.fullname}
-            money={application.details.amount}
-            rank={application.details.rating}
-            text={application.details.reason}
+            key={application?.id}
+            id={application?.id as string}
+            fullName={application?.Verifier.fullname as string}
+            money={application?.amount as number}
+            rank={application?.rating as number}
+            text={application?.reason as string}
           />
         ))}
-        {length ? (
-          <InfiniteScrollFeed
-            dis={applications.cursor.firstBatch[length - 1].distance}
+        {applications.length === APPLICATIONS_PER_PAGE && (
+          <ApplicationsInfiniteScrollFeed
+            dis={applications[applications.length - 1]?.Verifier.distance}
           />
-        ) : (
-          <></>
         )}
       </div>
-    </main>
+    </PageWrapper>
   );
 };
 

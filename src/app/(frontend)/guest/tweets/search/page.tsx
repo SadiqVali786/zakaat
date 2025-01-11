@@ -1,15 +1,22 @@
-import DP from "@/../public/dashboard/dp.png";
-import InfiniteFeedbar from "@/components/infinite-feed-bar";
-import PageWrapper from "@/components/page-wrapper";
 import Tweet from "@/components/Tweet";
-import TweetInputArea from "@/components/TweetInputArea";
-import TweetsScrollFeed from "@/components/tweets-scroll-feed";
-
 import { TWEETS_PER_PAGE } from "@/config/app.config";
 import prisma from "@/db";
+import DP from "@/../public/dashboard/dp.png";
+import PageWrapper from "@/components/page-wrapper";
+import InfiniteFeedbar from "@/components/infinite-feed-bar";
 
-export default async function Home() {
+const SearchTweets = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) => {
   const tweets = await prisma.tweet.findMany({
+    where: {
+      text: {
+        contains: searchParams.searchTerm as string,
+        mode: "insensitive",
+      },
+    },
     select: {
       id: true,
       text: true,
@@ -28,8 +35,7 @@ export default async function Home() {
   return (
     <PageWrapper>
       <div className="flex flex-col">
-        <InfiniteFeedbar type="tweets" />
-        <TweetInputArea />
+        <InfiniteFeedbar type="empty" />
         {tweets.map((tweet) => (
           <Tweet
             key={tweet.id}
@@ -40,10 +46,9 @@ export default async function Home() {
             tweetBody={tweet.text}
           />
         ))}
-        {tweets.length === TWEETS_PER_PAGE && (
-          <TweetsScrollFeed id={tweets[tweets.length - 1].id} />
-        )}
       </div>
     </PageWrapper>
   );
-}
+};
+
+export default SearchTweets;

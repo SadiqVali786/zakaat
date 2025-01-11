@@ -1,17 +1,21 @@
-import { auth } from "@/auth";
 import Application from "@/components/application";
 import InfiniteFeedbar from "@/components/infinite-feed-bar";
-import HistoryScrollFeed from "@/components/history-scroll-feed";
 import PageWrapper from "@/components/page-wrapper";
 import { APPLICATIONS_PER_PAGE } from "@/config/app.config";
 import prisma from "@/db";
-import { STATUS } from "@prisma/client";
 
-const BookmarkedApplications = async () => {
-  const session = await auth();
-
+const SearchApplications = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) => {
   const applications = await prisma.application.findMany({
-    where: { status: STATUS.DONATED, donatedUserId: session?.user.id },
+    where: {
+      reason: {
+        contains: searchParams.searchTerm as string,
+        mode: "insensitive",
+      },
+    },
     select: {
       id: true,
       amount: true,
@@ -28,7 +32,7 @@ const BookmarkedApplications = async () => {
 
   return (
     <PageWrapper>
-      <InfiniteFeedbar type="applications" />
+      <InfiniteFeedbar type="empty" />
       <div className="flex flex-col gap-y-5 xs:px-4 pt-5">
         {applications.map((application) => (
           <Application
@@ -40,12 +44,9 @@ const BookmarkedApplications = async () => {
             text={application.reason}
           />
         ))}
-        {applications.length === APPLICATIONS_PER_PAGE && (
-          <HistoryScrollFeed id={applications[applications.length - 1].id} />
-        )}
       </div>
     </PageWrapper>
   );
 };
 
-export default BookmarkedApplications;
+export default SearchApplications;

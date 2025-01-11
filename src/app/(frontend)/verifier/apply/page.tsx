@@ -18,16 +18,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { startTransition, useActionState } from "react";
-import { usePathname } from "next/navigation";
-import { ICONS } from "@/lib/icons";
-import Image from "next/image";
 import { createApplicationAction } from "@/actions/application.actions";
 import { applicationSchema } from "@/lib/validators/application.validator";
 import useAuthorization from "@/hooks/useAuthorization";
-import { toast } from "@/hooks/use-toast";
+import InfiniteFeedbar from "@/components/infinite-feed-bar";
+import PageWrapper from "@/components/page-wrapper";
+import { handleActionToast, spawnaToast } from "@/lib/utils";
 
 const FormWithShadcn = () => {
-  // const { session, router } = useAuthorization();
+  const { session, router, pathname } = useAuthorization();
   const [actionState, action, isPending] = useActionState(
     createApplicationAction,
     null
@@ -42,40 +41,18 @@ const FormWithShadcn = () => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof applicationSchema>) {
     try {
-      startTransition(async () => {
+      await startTransition(async () => {
         await action(values);
       });
-      if (actionState?.status)
-        toast({
-          title: actionState?.message,
-          variant: "default",
-        });
-      else
-        toast({
-          title: actionState?.message,
-          variant: "destructive",
-        });
+      handleActionToast(actionState);
     } catch (error) {
-      toast({
-        title: "Internal Server Error",
-        variant: "destructive",
-      });
+      spawnaToast("Internal server error", "destructive");
     }
   }
 
-  const pathname = usePathname();
-  const length = pathname.split("/").length;
-
   return (
-    <div className="h-full grow xs:border-x-[1px] border-neutral-11 max-w-[708px]">
-      <div className="flex gap-x-2 border-b-[1px] border-neutral-11 sticky top-0 backdrop-blur-3xl xs:pt-8 pt-4 pl-4 pb-4 items-center">
-        <Image
-          alt="back"
-          src={ICONS["arrow-backward-black"]}
-          className="cursor-pointer"
-        />
-        <span>{pathname.split("/")[length - 1]}</span>
-      </div>
+    <PageWrapper>
+      <InfiniteFeedbar type="path" />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -178,7 +155,7 @@ const FormWithShadcn = () => {
           </Button>
         </form>
       </Form>
-    </div>
+    </PageWrapper>
   );
 };
 

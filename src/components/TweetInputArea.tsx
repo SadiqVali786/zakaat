@@ -10,6 +10,7 @@ import Image from "next/image";
 import DP from "@/../public/dashboard/dp.png";
 import Post from "@/../public/Icons/dashboard/send.png";
 import { createTweetAction } from "@/actions/tweet.actions";
+import { spawnaToast } from "@/lib/utils";
 
 const initialConfig = {
   namespace: "TweetEditor",
@@ -27,11 +28,16 @@ function PostTweetButton() {
 
   const saveTweet = async () => {
     editor.update(async () => {
-      const rawContent = $getRoot().getTextContent();
-      console.log("Saved Tweet:", rawContent); // TODO: test whether it is saving or not
-      startTransition(async () => {
-        await action({ text: rawContent });
-      });
+      try {
+        const rawContent = $getRoot().getTextContent();
+        console.log("Saved Tweet:", rawContent); // TODO: test whether it is saving or not
+        startTransition(async () => {
+          await action({ text: rawContent });
+        });
+        spawnaToast("new tweet created", "default");
+      } catch (error) {
+        spawnaToast("Error while Posting tweet", "destructive");
+      }
     });
   };
 

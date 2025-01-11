@@ -48,10 +48,15 @@ const useAuthorization = () => {
         (pathname.includes("donor") && user.role !== ROLE.DONOR)
       )
         router.replace(APP_PATHS.SIGNIN);
-    }
-  }, [session, router]);
 
-  return { session, router };
+      if (pathname === APP_PATHS.SIGNIN && user.role === ROLE.VERIFIER)
+        router.replace(APP_PATHS.SEARCH_APPLICANT);
+      if (pathname === APP_PATHS.SIGNIN && user.role === ROLE.DONOR)
+        router.replace(APP_PATHS.ZAKAAT_APPLICATIONS);
+    }
+  }, [session, router, pathname]);
+
+  return { session, router, pathname };
 };
 
 export default useAuthorization;

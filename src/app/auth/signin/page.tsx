@@ -1,29 +1,19 @@
 "use client";
 
-import APP_PATHS from "@/config/path.config";
-import { toast } from "@/hooks/use-toast";
+import useAuthorization from "@/hooks/useAuthorization";
 import { LOGOS } from "@/lib/logos";
+import { spawnaToast } from "@/lib/utils";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 
 const SigninComponent = () => {
+  const { pathname, router, session } = useAuthorization();
   const handleGoogleSignIn = async () => {
     try {
-      const result = await signIn("github", { redirectTo: APP_PATHS.WELCOME });
-      if (!result?.ok)
-        return toast({
-          title: "Something went wrong on Google Authentication side",
-          variant: "destructive",
-        });
-      toast({
-        title: "Login Successfull",
-        variant: "default",
-      });
+      await signIn("github");
+      spawnaToast("Login Successful", "default");
     } catch (error) {
-      toast({
-        title: "Internal Server Error",
-        variant: "destructive",
-      });
+      spawnaToast("Internal server error", "destructive");
     }
   };
 

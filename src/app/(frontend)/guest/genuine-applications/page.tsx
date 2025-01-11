@@ -1,22 +1,17 @@
-import { auth } from "@/auth";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Application from "@/components/application";
+import GuestScrollFeed from "@/components/guest-scroll-feed";
 import InfiniteFeedbar from "@/components/infinite-feed-bar";
-import HistoryScrollFeed from "@/components/history-scroll-feed";
 import PageWrapper from "@/components/page-wrapper";
 import { APPLICATIONS_PER_PAGE } from "@/config/app.config";
 import prisma from "@/db";
-import { STATUS } from "@prisma/client";
 
-const BookmarkedApplications = async () => {
-  const session = await auth();
-
+const GenuineApplications = async () => {
   const applications = await prisma.application.findMany({
-    where: { status: STATUS.DONATED, donatedUserId: session?.user.id },
     select: {
       id: true,
       amount: true,
       reason: true,
-      hide: true,
       rating: true,
       Verifier: {
         select: { fullname: true, phoneNum: true, selfie: true, id: true },
@@ -29,7 +24,7 @@ const BookmarkedApplications = async () => {
   return (
     <PageWrapper>
       <InfiniteFeedbar type="applications" />
-      <div className="flex flex-col gap-y-5 xs:px-4 pt-5">
+      <div className="flex flex-col gap-y-5 xs:px-4 py-5">
         {applications.map((application) => (
           <Application
             key={application.id}
@@ -41,11 +36,11 @@ const BookmarkedApplications = async () => {
           />
         ))}
         {applications.length === APPLICATIONS_PER_PAGE && (
-          <HistoryScrollFeed id={applications[applications.length - 1].id} />
+          <GuestScrollFeed id={applications[applications.length - 1].id} />
         )}
       </div>
     </PageWrapper>
   );
 };
 
-export default BookmarkedApplications;
+export default GenuineApplications;

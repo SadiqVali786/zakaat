@@ -18,12 +18,10 @@ import { signupFormSchema } from "@/lib/validators/auth.validator";
 import { signupAction } from "@/actions/signup.actions";
 import APP_PATHS from "@/config/path.config";
 import { signOut } from "next-auth/react";
-import useAuthorization from "@/hooks/useAuthorization";
-import { toast } from "@/hooks/use-toast";
+import { handleActionToast, spawnaToast } from "@/lib/utils";
 
 const SignupPage = () => {
   const [step, setStep] = useState(1);
-  const { session, router } = useAuthorization();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof signupFormSchema>>({
@@ -46,25 +44,13 @@ const SignupPage = () => {
   // 2. Define a submit handler.
   async function onSubmit(payload: z.infer<typeof signupFormSchema>) {
     try {
-      startTransition(async () => {
+      await startTransition(async () => {
         await action(payload);
       });
-      if (actionState?.status)
-        toast({
-          title: actionState?.message,
-          variant: "default",
-        });
-      else
-        toast({
-          title: actionState?.message,
-          variant: "destructive",
-        });
+      handleActionToast(actionState);
       await signOut({ redirectTo: APP_PATHS.SIGNIN });
     } catch (error) {
-      toast({
-        title: "Internal server error",
-        variant: "destructive",
-      });
+      spawnaToast("Internal server error", "destructive");
     }
   }
 

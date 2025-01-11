@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
-
 import "@/app/globals.css";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+import AuthProvider from "@/providers/auth-provider";
+
+import type { Metadata } from "next";
 import RightSidebar from "@/components/dashboard/RightSidebar";
 import MobileNavbar from "@/components/MobileNavbar";
 import DonorLeftSidebar from "@/components/dashboard/LeftSidebar";
-import AuthProvider from "@/providers/auth-provider";
-import { ThemeProvider } from "@/providers/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Zakaat",

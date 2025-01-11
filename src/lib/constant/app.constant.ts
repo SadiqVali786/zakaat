@@ -9,11 +9,11 @@ export const NAVBAR_LINKS = [
   },
   {
     title: "Tweets",
-    link: APP_PATHS.TWEETS,
+    link: APP_PATHS.GUEST_TWEETS,
   },
   {
     title: "Applications",
-    link: APP_PATHS.ZAKAAT_APPLICATIONS,
+    link: APP_PATHS.GUEST_ZAKAAT_APPLICATIONS,
   },
   {
     title: "Download",
@@ -50,6 +50,19 @@ export const donorSidebar = [
     label: "Donations History",
     path: APP_PATHS.DONATIONS_HISTORY,
     icon: ICONS["donations-history"],
+  },
+];
+
+export const guestSidebar = [
+  {
+    label: "Tweets",
+    path: APP_PATHS.GUEST_TWEETS,
+    icon: ICONS.tweets,
+  },
+  {
+    label: "Zakaat Applications",
+    path: APP_PATHS.GUEST_ZAKAAT_APPLICATIONS,
+    icon: ICONS["zakaat-applications"],
   },
 ];
 

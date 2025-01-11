@@ -23,10 +23,11 @@ import { Textarea } from "@/components/ui/textarea";
 import APP_PATHS from "@/config/path.config";
 import { useApplicationStoreSelector } from "@/store/application-store";
 import useAuthorization from "@/hooks/useAuthorization";
-import { toast } from "@/hooks/use-toast";
+import PageWrapper from "@/components/page-wrapper";
+import { handleActionToast, spawnaToast } from "@/lib/utils";
 
 const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
-  const { session, router } = useAuthorization();
+  const { session, router, pathname } = useAuthorization();
   // const phoneNum = params.phoneNum;
   const amount = useApplicationStoreSelector.use.amount();
   const fullname = useApplicationStoreSelector.use.fullname();
@@ -61,41 +62,26 @@ const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
   });
 
   useEffect(() => {
-    if (actionState) {
-      // console.log(actionState);
-      if (actionState?.status) {
-        router.push(APP_PATHS.SEARCH_APPLICANT);
-      }
+    if (actionState && actionState?.status) {
+      router.push(APP_PATHS.SEARCH_APPLICANT);
     }
   }, [actionState]);
 
   async function onSubmit(payload: z.infer<typeof applicationSchema>) {
     try {
       const { fullname, ...rest } = payload;
-      startTransition(async () => {
+      await startTransition(async () => {
         await action(rest);
       });
+      handleActionToast(actionState);
       reset();
-      if (actionState?.status)
-        toast({
-          title: actionState?.message,
-          variant: "default",
-        });
-      else
-        toast({
-          title: actionState?.message,
-          variant: "destructive",
-        });
     } catch (error) {
-      toast({
-        title: "Internal server error",
-        variant: "destructive",
-      });
+      spawnaToast("Internal server error", "destructive");
     }
   }
 
   return (
-    <div className="border-x-[1px] border-neutral-11 pt-10 flex flex-col h-full gap-y-4 px-4 grow items-center justify-center max-w-[708px]">
+    <PageWrapper>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -216,7 +202,7 @@ const EditApplication = ({ params }: { params: { phoneNum: string } }) => {
           </Button>
         </form>
       </Form>
-    </div>
+    </PageWrapper>
   );
 };
 

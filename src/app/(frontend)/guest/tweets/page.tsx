@@ -28,8 +28,8 @@ export default async function Home() {
   return (
     <PageWrapper>
       <div className="flex flex-col">
-        <InfiniteFeedbar type="tweets" />
-        <TweetInputArea />
+        <InfiniteFeedbar type="empty" />
+        {/* <TweetInputArea /> */}
         {tweets.map((tweet) => (
           <Tweet
             key={tweet.id}

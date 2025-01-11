@@ -26,7 +26,9 @@ import { useRouter } from "next/navigation";
 import APP_PATHS from "@/config/path.config";
 import { useApplicationStoreSelector } from "@/store/application-store";
 import { phoneNumSchema } from "@/lib/validators/search.validators";
-import { toast } from "@/hooks/use-toast";
+
+import PageWrapper from "@/components/page-wrapper";
+import { handleActionToast, spawnaToast } from "@/lib/utils";
 
 const Page = () => {
   const navigate = useRouter();
@@ -67,29 +69,19 @@ const Page = () => {
   // 2. Define a submit handler.
   async function onSubmit(payload: z.infer<typeof phoneNumSchema>) {
     try {
-      startTransition(async () => {
+      await startTransition(async () => {
         await action({ ...payload });
       });
-      if (actionState?.status)
-        toast({
-          title: actionState?.message,
-          variant: "default",
-        });
-      else
-        toast({
-          title: actionState?.message,
-          variant: "destructive",
-        });
+      handleActionToast(actionState);
     } catch (error) {
-      toast({
-        title: "Internal server error",
-        variant: "destructive",
-      });
+      spawnaToast("Internal server error", "destructive");
     }
   }
 
+  // "border-x-[1px] border-neutral-11 pt-10 flex flex-col h-full gap-y-4 px-4 grow items-center justify-center max-w-[708px]"
+
   return (
-    <div className="border-x-[1px] border-neutral-11 pt-10 flex flex-col h-full gap-y-4 px-4 grow items-center justify-center max-w-[708px]">
+    <PageWrapper>
       {/* step1 */}
       {/* <div className="flex flex-col items-center py-[6.25rem] px-[3.75rem] max-w-[510px] rounded-[30px] border-[10px] border-neutral-12 cursor-pointer">
         <div className="flex flex-col items-center gap-1 w-full">
@@ -153,7 +145,7 @@ const Page = () => {
           </Button>
         </form>
       </Form>
-    </div>
+    </PageWrapper>
   );
 };
 

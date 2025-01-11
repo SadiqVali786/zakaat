@@ -23,7 +23,8 @@ export const fetchInfiniteApplicationsFeed = async (
   payload: Distance
 ) => {
   try {
-    // payload = idSchema.parse(payload);
+    console.log(payload);
+    // payload = idSchema.parse(payload); // TODO: write Distance Schema
     const session = await auth();
     if (!session || !session.user || session.user.role !== ROLE.DONOR)
       throw new ErrorHandler(
@@ -31,7 +32,7 @@ export const fetchInfiniteApplicationsFeed = async (
         "UNAUTHORIZED"
       );
     // #########################################################
-    const applications = (await prisma.$runCommandRaw({
+    const rawApplications = (await prisma.$runCommandRaw({
       aggregate: "User",
       pipeline: [
         {
@@ -72,6 +73,7 @@ export const fetchInfiniteApplicationsFeed = async (
         },
         {
           $project: {
+            _id: 1,
             fullname: 1,
             phoneNum: 1,
             selfie: 1,
@@ -87,23 +89,39 @@ export const fetchInfiniteApplicationsFeed = async (
           ? [
               {
                 $match: {
-                  distance: { $gt: payload.distance + 1 },
+                  distance: { $gt: Math.ceil(payload.distance) },
                 },
               },
             ]
           : []),
       ],
-      cursor: { batchSize: APPLICATIONS_PER_PAGE + 1 },
+      cursor: {
+        batchSize: APPLICATIONS_PER_PAGE + 1,
+      },
     })) as PaginatedOutput<Application>;
-    if (applications.cursor.firstBatch.length === APPLICATIONS_PER_PAGE + 1) {
-      applications.hasMore = true;
-      applications.cursor.firstBatch.pop();
-    } else applications.hasMore = false;
-    return new SuccessResponse(
-      "applications feed fetched",
-      200,
-      applications
-    ).serialize();
+
+    const applications = rawApplications?.cursor?.firstBatch?.map((app) => ({
+      id: app.details?._id,
+      amount: app.details?.amount,
+      reason: app.details?.reason,
+      hide: app.details?.hide,
+      rating: app.details?.rating,
+      Verifier: {
+        id: app._id,
+        distance: app.distance,
+        fullname: app.fullname,
+        phoneNum: app.phoneNum,
+        selfie: app.selfie,
+      },
+    }));
+
+    console.log(applications);
+    if (applications.length === APPLICATIONS_PER_PAGE + 1) applications.pop();
+
+    return new SuccessResponse("applications feed fetched", 200, {
+      applications,
+      hasMore: applications.length === APPLICATIONS_PER_PAGE + 1,
+    }).serialize();
     // #########################################################
   } catch (error) {
     return standardizedApiError(error);
@@ -421,6 +439,46 @@ export const fetchBookmarkedApplicationsFeedAction = async (
   }
 };
 
+export const fetchGuestApplicationsFeedAction = async (
+  previousState: any,
+  payload: z.infer<typeof idSchema>
+) => {
+  payload = idSchema.parse(payload);
+  const session = await auth();
+  if (!session || !session.user || session.user.role !== ROLE.DONOR)
+    throw new ErrorHandler(
+      "You must be authenticated as DONOR to access this resource",
+      "UNAUTHORIZED"
+    );
+  // #########################################################
+  try {
+    const applications = await prisma.application.findMany({
+      select: {
+        id: true,
+        hide: true,
+        amount: true,
+        rating: true,
+        reason: true,
+        Verifier: {
+          select: { id: true, fullname: true, phoneNum: true, selfie: true },
+        },
+      },
+      take: TWEETS_PER_PAGE,
+      skip: 1,
+      cursor: { id: payload.id },
+      orderBy: { createdAt: "desc" },
+    });
+    return new SuccessResponse(
+      "guest applications feed fetched",
+      200,
+      applications
+    ).serialize();
+    // #########################################################
+  } catch (error) {
+    return standardizedApiError(error);
+  }
+};
+
 export const fetchHistoryApplicationsFeedAction = async (
   previousState: any,
   payload: z.infer<typeof idSchema>
@@ -461,3 +519,95 @@ export const fetchHistoryApplicationsFeedAction = async (
     return standardizedApiError(error);
   }
 };
+
+// export const fetchInfiniteApplicationsFeed = async (
+//   previousState: any,
+//   payload: Distance
+// ) => {
+//   try {
+//     // payload = idSchema.parse(payload);
+//     const session = await auth();
+//     if (!session || !session.user || session.user.role !== ROLE.DONOR)
+//       throw new ErrorHandler(
+//         "You must be authenticated as DONOR to access this resource",
+//         "UNAUTHORIZED"
+//       );
+//     // #########################################################
+//     const applications = (await prisma.$runCommandRaw({
+//       aggregate: "User",
+//       pipeline: [
+//         {
+//           $geoNear: {
+//             near: {
+//               type: "Point",
+//               coordinates: [session.user.longitude, session.user.latitude],
+//             },
+//             distanceField: "distance",
+//             spherical: true,
+//             key: "location",
+//           },
+//         },
+//         {
+//           $match: {
+//             role: "ACCEPTOR",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "Application",
+//             localField: "_id",
+//             foreignField: "authorId",
+//             as: "details",
+//           },
+//         },
+//         {
+//           $addFields: {
+//             details: {
+//               $arrayElemAt: ["$details", 0],
+//             },
+//           },
+//         },
+//         {
+//           $match: {
+//             "details.status": "VERIFIED",
+//           },
+//         },
+//         {
+//           $project: {
+//             fullname: 1,
+//             phoneNum: 1,
+//             selfie: 1,
+//             distance: 1,
+//             "details._id": 1,
+//             "details.hide": 1,
+//             "details.amount": 1,
+//             "details.reason": 1,
+//             "details.rating": 1,
+//           },
+//         },
+//         ...(payload.distance
+//           ? [
+//               {
+//                 $match: {
+//                   distance: { $gt: payload.distance + 1 },
+//                 },
+//               },
+//             ]
+//           : []),
+//       ],
+//       cursor: { batchSize: APPLICATIONS_PER_PAGE + 1 },
+//     })) as PaginatedOutput<Application>;
+//     if (applications.cursor.firstBatch.length === APPLICATIONS_PER_PAGE + 1) {
+//       applications.hasMore = true;
+//       applications.cursor.firstBatch.pop();
+//     } else applications.hasMore = false;
+//     return new SuccessResponse(
+//       "applications feed fetched",
+//       200,
+//       applications
+//     ).serialize();
+//     // #########################################################
+//   } catch (error) {
+//     return standardizedApiError(error);
+//   }
+// };

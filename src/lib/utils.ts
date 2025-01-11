@@ -1,5 +1,8 @@
+import { toast } from "@/hooks/use-toast";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { SuccessResponseType } from "./api-error-success-handlers/success";
+import { ErrorResponseType } from "./api-error-success-handlers/error";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -157,3 +160,18 @@ export function formatRelativeDate(
 //   "Yesterday vs Nine Days Ago:\n",
 //   formatRelativeDate(yesterday, nineDaysAgo)
 // );
+
+export const handleActionToast = (
+  actionState: SuccessResponseType | ErrorResponseType | null
+) => {
+  if (actionState?.status)
+    spawnaToast(actionState?.message as string, "default");
+  else spawnaToast(actionState?.message as string, "destructive");
+};
+
+export const spawnaToast = (
+  title: string,
+  variant: "destructive" | "default"
+) => {
+  toast({ title, variant });
+};

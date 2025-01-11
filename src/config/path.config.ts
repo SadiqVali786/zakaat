@@ -9,6 +9,7 @@ const APP_PATHS = {
   FAQS: "#faq",
 
   ZAKAAT_APPLICATIONS: "/donor/genuine-applications",
+  GUEST_ZAKAAT_APPLICATIONS: "/guest/genuine-applications",
   BOOKMARKED_APPLICATIONS: "/donor/bookmarked-applications",
   DONATIONS_HISTORY: "/donor/donations-history",
   WELCOME: "/auth/welcome",
@@ -18,6 +19,7 @@ const APP_PATHS = {
   EDIT_APPLICATION: "/verifier/edit",
 
   TWEETS: "/donor/tweets",
+  GUEST_TWEETS: "/guest/tweets",
   SEARCH_TWEETS: "/donor/tweets/search",
   SEARCH_APPLICATIONS: "/donor/genuine-applications/search",
   FOLLOWING_TWEETS: "/donor/following-tweets",

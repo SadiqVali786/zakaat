@@ -10,13 +10,13 @@ const NavbarAuthentication = ({ className }: { className: string }) => {
 
   return (
     <Link
-      href={status === "unauthenticated" ? APP_PATHS.SIGNIN : "#"}
+      href={status === "unauthenticated" ? APP_PATHS.SIGNIN : APP_PATHS.HOME}
       className={cn(
         "items-center gap-2 py-2 px-5 rounded-lg border border-[#211f30] bg-gradient-to-b from-[#030014] to-[#292637] text-xl leading-normal font-dm-sans text-[#8e8c95]",
         className
       )}
-      onClick={() => {
-        if (status === "authenticated") signOut({ redirectTo: APP_PATHS.HOME });
+      onClick={async () => {
+        if (status === "authenticated") await signOut();
       }}
     >
       <span
@@ -27,7 +27,11 @@ const NavbarAuthentication = ({ className }: { className: string }) => {
         }}
         className="text-xl leading-normal"
       >
-        {status === "unauthenticated" ? "Login" : "Logout"}
+        {status === "unauthenticated"
+          ? "Login"
+          : status === "authenticated"
+          ? "Logout"
+          : "Loading"}
       </span>
     </Link>
   );

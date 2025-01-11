@@ -4,26 +4,15 @@ import { fetchBookmarkedApplicationsFeedAction } from "@/actions/application.act
 import { useActionState, useEffect, useState } from "react";
 import Application from "./application";
 import useInfiniteScroll from "@/hooks/use-infinite-scroll";
+import { FetchedApplicationType } from "@/types/application.types";
 
 type Props = { id: string };
 
-type Application = {
-  amount: number;
-  reason: string;
-  hide: boolean;
-  rating: number;
-  id: string;
-  Verifier: {
-    fullname: string;
-    phoneNum: string;
-    id: string;
-    selfie: string;
-  } | null;
-};
-
 const BookmarksScrollFeed: React.FC<Props> = ({ id }) => {
   const [cursor, setCursor] = useState<string>(id);
-  const [applications, setApplications] = useState<Application[]>([]);
+  const [applications, setApplications] = useState<FetchedApplicationType[]>(
+    []
+  );
 
   const [actionState, action, isPending] = useActionState(
     fetchBookmarkedApplicationsFeedAction,
@@ -32,10 +21,12 @@ const BookmarksScrollFeed: React.FC<Props> = ({ id }) => {
 
   useEffect(() => {
     if (actionState && actionState.additional.length && isPending == false) {
-      const additional = actionState.additional as Application[];
-      const length = additional.length;
-      setCursor(additional[length - 1].id);
-      setApplications((prev) => [...prev, ...additional]);
+      const fetchedApplications =
+        actionState.additional as FetchedApplicationType[];
+      setCursor(
+        fetchedApplications[fetchedApplications.length - 1]?.id as string
+      );
+      setApplications((prev) => [...prev, ...fetchedApplications]);
     }
   }, [actionState, isPending]);
 
@@ -45,12 +36,12 @@ const BookmarksScrollFeed: React.FC<Props> = ({ id }) => {
     <div>
       {applications.map((application) => (
         <Application
-          key={application.id}
-          id={application.id}
-          fullName={application.Verifier?.fullname as string}
-          money={application.amount}
-          rank={application.rating}
-          text={application.reason}
+          key={application?.id}
+          id={application?.id as string}
+          fullName={application?.Verifier?.fullname as string}
+          money={application?.amount as number}
+          rank={application?.rating as number}
+          text={application?.reason as string}
         />
       ))}
     </div>
